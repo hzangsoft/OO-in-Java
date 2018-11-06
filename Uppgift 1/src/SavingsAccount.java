@@ -6,8 +6,8 @@
  */
 public class SavingsAccount {
 	// En klassvariabel som används för att generera unika kontonummer.
-	
 	private static int latestAccountNumber = 1000;
+	
 	private final int accountNumber; // Kontonumret
 	private double balance; // Kontots saldo
 	private double interestRate; // Kontots räntesats
@@ -166,7 +166,8 @@ public class SavingsAccount {
 	 * Om kontot är öppet, så markeras det som stängt och den upplupna räntan
 	 * beräknas.
 	 * 
-	 * @return Den upplupna räntan på kontot.
+	 * @return Den upplupna räntan på kontot om kontot var öppet.
+	 * @return -1 om kontot redan var stängt.
 	 */
 	public double closeAccount() {
 		if (accountOpen) {
