@@ -56,7 +56,7 @@ abstract public class Account {
 	}
 
 	/**
-	 * Sätter behållningen på kontot.
+	 * Sätter status på kontot till öppet.
 	 * 
 	 * @param balance
 	 *            Den nya behållningen på kontot.
@@ -163,15 +163,19 @@ abstract public class Account {
 	abstract public double closeAccount();
 	
 	/**
-	 * Om kontot är öppet, så markeras det som stängt och den upplupna räntan
-	 * beräknas.
+	 * Hämta de transaktioner som har gjorts på kontot.
 	 * 
-	 * @return Den upplupna räntan på kontot.
+	 * @return En lista med transaktioner som har gjorts på kontot.
 	 */
 	public ArrayList<String> getTransactions() {
 		return transactions.getTransactions();
 	}
 	
+	/**
+	 * Om kontot är öppet, så lagras en transaktion i transaktionslistan.
+	 * 
+	 * @return Den upplupna räntan på kontot.
+	 */
 	public void logTransaction(double amount, double balance) {
 		transactions.add(new Transaction(amount, balance));
 	}
