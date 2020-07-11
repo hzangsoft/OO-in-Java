@@ -303,5 +303,22 @@ public class CustomerList {
 		}
 	}
 
+	/**
+	 * Hämtar en lista som innehåller presentation av konto samt alla
+	 * transaktioner som gjorts på kontot.
+	 * 
+	 * @param pNo
+	 *            Kundens personnummer
+	 * @return En ArrayList med strängar innehållande kundens kontonummer.
+	 */
+	public ArrayList<String> getAccountList(long pNo) {
+		int customerIndex = getCustomerIndex(pNo);
+		ArrayList<String> result = new ArrayList<String>();
 
+		// Kontrollera om kunden finns
+		if (customerIndex >= 0) {
+			result = customerList.get(customerIndex).getAccountList();
+		}
+		return result;
+	}
 }

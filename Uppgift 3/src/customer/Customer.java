@@ -21,6 +21,8 @@ public class Customer {
 	private long socialSecurityNumber; // Kundens personnummer
 	private final ArrayList<Account> accountList; // Kundens konton
 
+
+
 	/**
 	 * Konstruktor
 	 * 
@@ -36,6 +38,8 @@ public class Customer {
 		this.accountList = new ArrayList<Account>();
 	}
 
+	
+	
 	/**
 	 * Getter-funktion för kundens namn
 	 * 
@@ -79,9 +83,28 @@ public class Customer {
 	 * 
 	 * @see java.lang.Object#toString()
 	 * 
-	 * @return En strängrepresentation av kundinformationen innehållande namn
-	 * och personnummer.
+	 * @return En strängrepresentation av kundens alla kontonummer.
 	 */
+	
+	
+	public ArrayList<String> getAccountList() {
+		ArrayList<String> result = new ArrayList<String>();
+		if (!accountList.isEmpty()) {
+		
+			// Iterera över alla konton
+			for (Account a : accountList) {
+				Integer accountNumber;
+				accountNumber = a.getAccountNumber();
+				result.add(accountNumber.toString());
+			}
+			// Töm hela kontolistan.
+			accountList.clear();
+		}
+		return result;
+	}
+	
+	
+	
 	@Override
 	public String toString() {
 		return name + " " + socialSecurityNumber;
@@ -114,17 +137,8 @@ public class Customer {
 	 * @return False om kontonumret inte existerar.
 	 */
 	public boolean accountExists(int accountNo) {
-		ListIterator<Account> accountIterator = accountList
-				.listIterator();
+		return getAccountIndex(accountNo) >= 0;
 
-		// Iterera över alla konton tills kontonumret har hittas eller
-		// tills listan är slut.
-		while (accountIterator.hasNext()) {
-			if (accountIterator.next().getAccountNumber() == accountNo) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	/**
@@ -135,10 +149,9 @@ public class Customer {
 	 * @return Indexet om kontot existerar.
 	 * @return -1 om kontot inte existerar.
 	 */
-	public int getAccountIndex(int accountNo) {
+	private int getAccountIndex(int accountNo) {
 		int index = -1;
-		ListIterator<Account> accountIterator = accountList
-				.listIterator();
+		ListIterator<Account> accountIterator = accountList.listIterator();
 		// Iterera över alla konton tills kontonumret har hittas eller
 		// tills listan är slut.
 		while ((accountIterator.hasNext()) && (index == -1)) {

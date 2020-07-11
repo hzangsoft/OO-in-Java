@@ -68,22 +68,4 @@ public class SavingsAccount extends Account {
 			return false;
 		}
 	}
-
-	/* (non-Javadoc)
-	 * @see Account#calculateInterest()
-	 */
-	@Override
-	public double calculateInterest() {
-		return getBalance() * getInterestRate() / 100;
-	}
-	
-	public double closeAccount() {
-		if (isOpen()) {
-			setAccountOpen(false);
-			double interest = calculateInterest();
-			return interest;
-		} else {
-			return -1.0;
-		}
-	}
 }

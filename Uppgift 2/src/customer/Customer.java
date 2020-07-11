@@ -114,17 +114,8 @@ public class Customer {
 	 * @return False om kontonumret inte existerar.
 	 */
 	public boolean accountExists(int accountNo) {
-		ListIterator<Account> accountIterator = accountList
-				.listIterator();
+		return getAccountIndex(accountNo) >= 0;
 
-		// Iterera över alla konton tills kontonumret har hittas eller
-		// tills listan är slut.
-		while (accountIterator.hasNext()) {
-			if (accountIterator.next().getAccountNumber() == accountNo) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	/**
@@ -135,10 +126,9 @@ public class Customer {
 	 * @return Indexet om kontot existerar.
 	 * @return -1 om kontot inte existerar.
 	 */
-	public int getAccountIndex(int accountNo) {
+	private int getAccountIndex(int accountNo) {
 		int index = -1;
-		ListIterator<Account> accountIterator = accountList
-				.listIterator();
+		ListIterator<Account> accountIterator = accountList.listIterator();
 		// Iterera över alla konton tills kontonumret har hittas eller
 		// tills listan är slut.
 		while ((accountIterator.hasNext()) && (index == -1)) {

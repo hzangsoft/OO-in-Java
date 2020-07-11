@@ -22,8 +22,105 @@ public class BankLogic {
 	 */
 	public BankLogic() {
 		this.customerList = new CustomerList();
+		createTestData();
+		
 	}
 
+	
+	private void createTestData() {
+
+		
+		// Create customers
+		
+		this.createCustomer("Karl Karlsson", 8505221898L);
+		this.createCustomer("Donald Duck", 9302205513L);
+		this.createCustomer("Pelle Persson", 6911258876L);
+		this.createCustomer("Lotta Larsson", 505121231L);
+
+
+		// Creates accounts
+		long pNo;
+		int a;
+		
+		pNo = 8505221898L;
+		a = this.createCreditAccount(pNo);
+		this.deposit(pNo, a, 100.0);
+		
+		a = this.createCreditAccount(pNo);
+		this.deposit(pNo, a, 100.0);
+		
+		a = this.createCreditAccount(pNo);
+		this.deposit(pNo, a, 100.0);
+		
+		a = this.createSavingsAccount(pNo);
+		this.deposit(pNo, a, 100.0);
+		
+		a = this.createSavingsAccount(pNo);
+		this.deposit(pNo, a, 100.0);
+		
+		a = this.createSavingsAccount(pNo);
+		this.deposit(pNo, a, 100.0);
+		
+		
+		pNo = 9302205513L;
+		a = this.createCreditAccount(pNo);
+		this.deposit(pNo, a, 100.0);
+		
+		a = this.createCreditAccount(pNo);
+		this.deposit(pNo, a, 100.0);
+		
+		a = this.createCreditAccount(pNo);
+		this.deposit(pNo, a, 100.0);
+		
+		a = this.createSavingsAccount(pNo);
+		this.deposit(pNo, a, 100.0);
+		
+		a = this.createSavingsAccount(pNo);
+		this.deposit(pNo, a, 100.0);
+		
+		a = this.createSavingsAccount(pNo);
+		this.deposit(pNo, a, 100.0);
+		
+		pNo = 6911258876L;
+		a = this.createCreditAccount(pNo);
+		this.deposit(pNo, a, 100.0);
+		
+		a = this.createCreditAccount(pNo);
+		this.deposit(pNo, a, 100.0);
+		
+		a = this.createCreditAccount(pNo);
+		this.deposit(pNo, a, 100.0);
+		
+		a = this.createSavingsAccount(pNo);
+		this.deposit(pNo, a, 100.0);
+		
+		a = this.createSavingsAccount(pNo);
+		this.deposit(pNo, a, 100.0);
+		
+		a = this.createSavingsAccount(pNo);
+		this.deposit(pNo, a, 100.0);
+		
+		
+		pNo= 505121231L;
+		a = this.createCreditAccount(pNo);
+		this.deposit(pNo, a, 100.0);
+		
+		a = this.createCreditAccount(pNo);
+		this.deposit(pNo, a, 100.0);
+		
+		a = this.createCreditAccount(pNo);
+		this.deposit(pNo, a, 100.0);
+		
+		a = this.createSavingsAccount(pNo);
+		this.deposit(pNo, a, 100.0);
+		
+		a = this.createSavingsAccount(pNo);
+		this.deposit(pNo, a, 100.0);
+		
+		a = this.createSavingsAccount(pNo);
+		this.deposit(pNo, a, 100.0);
+		
+	}
 
 
 	/**
@@ -241,6 +338,23 @@ public class BankLogic {
 		if (customerList.customerExists(pNo)) {
 			// Kontrollera om kontot finns
 			return customerList.getTransactions(pNo, accountId);
+		} else {
+			return null;
+		}
+	}
+	
+	/**
+	 * Hämtar en lista som innehåller alla konton för en given kund.
+	 * 
+	 * @param pNo
+	 *            Kundens personnummer
+	 * @return En ArrayList med strängar innehållande relevant information
+	 */
+	public ArrayList<String> getAccountList(long pNo) {
+		// Kontrollera om kunden finns
+		if (customerList.customerExists(pNo)) {
+			// Kontrollera om kontot finns
+			return customerList.getAccountList(pNo);
 		} else {
 			return null;
 		}

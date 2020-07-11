@@ -1,8 +1,8 @@
 package accounts;
 
-import transactions.TransactionList;
 
 import java.util.ArrayList;
+import java.util.ListIterator;
 
 import transactions.Transaction;
 
@@ -19,7 +19,7 @@ abstract public class Account {
 	private double balance; // Kontots saldo
 	private double interestRate; // Kontots räntesats
 	private boolean accountOpen; // Anger om kontot är öppet eller inte
-	private TransactionList transactions;
+	private ArrayList<Transaction> transactions;
 
 	/**
 	 * Konstruktor
@@ -35,7 +35,7 @@ abstract public class Account {
 		this.accountOpen = true;
 		this.balance = balance;
 		this.interestRate = interestRate;
-		this.transactions = new TransactionList();
+		this.transactions = new ArrayList<Transaction>();
 	}
 
 	/**
@@ -152,7 +152,9 @@ abstract public class Account {
 	 * 
 	 * @return Den upplupna räntan på kontot.
 	 */
-	abstract public double calculateInterest();
+	public double calculateInterest() {
+		return getBalance() * getInterestRate() / 100;
+	}
 
 	/**
 	 * Om kontot är öppet, så markeras det som stängt och den upplupna räntan
@@ -160,7 +162,15 @@ abstract public class Account {
 	 * 
 	 * @return Den upplupna räntan på kontot.
 	 */
-	abstract public double closeAccount();
+	public double closeAccount() {
+		if (isOpen()) {
+			setAccountOpen(false);
+			double interest = calculateInterest();
+			return interest;
+		} else {
+			return -1.0;
+		}
+	}
 	
 	/**
 	 * Hämta de transaktioner som har gjorts på kontot.
@@ -168,15 +178,32 @@ abstract public class Account {
 	 * @return En lista med transaktioner som har gjorts på kontot.
 	 */
 	public ArrayList<String> getTransactions() {
-		return transactions.getTransactions();
+		String s ="";
+		if (!transactions.isEmpty()) {
+			
+			ListIterator<Transaction> iterator = transactions.listIterator();
+			while (iterator.hasNext()) {
+				s += iterator.next().toString();
+				if (iterator.hasNext()) {
+					s += ", "; 
+				}
+			}
+		}
+		ArrayList<String> result = new ArrayList<String>();
+		result.add(s);
+		return result;
 	}
 	
 	/**
-	 * Om kontot är öppet, så lagras en transaktion i transaktionslistan.
+	 * Lagra en transaktion i transaktionslistan.
 	 * 
-	 * @return Den upplupna räntan på kontot.
+	 * @param amount
+	 *            Transaktionsbeloppet.
+	 * @param balance
+	 *            Behållningen på kontot efter utförd transaktion.
+	 * 			
 	 */
-	public void logTransaction(double amount, double balance) {
+	protected void logTransaction(double amount, double balance) {
 		transactions.add(new Transaction(amount, balance));
 	}
 }

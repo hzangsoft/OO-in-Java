@@ -35,8 +35,9 @@ public class BankFrame extends JFrame{
 	private JTextField amountField = new JTextField(TEXT_WIDTH);
 	
 	private ListModelHandler<String> customers = new ListModelHandler<String>();
-	private ListModelHandler<Integer> accounts = new ListModelHandler<Integer>();
+	private ListModelHandler<String> accounts = new ListModelHandler<String>();
 	private JList<String> customerList;
+	private JList<String> accountList;
 	
 	
 	public BankFrame(BankLogic bank) {
@@ -110,17 +111,16 @@ public class BankFrame extends JFrame{
 	}
 
 	private void updateAccountList(long pNo) {
-		// Hämta list över kundens konton som sträng!!
-		accounts.setListItems(bank.getAllCustomers());
-		customerList = new JList<>(customers.getListModel());
+		// Hämta lista över kundens konton som strängar
+		accounts.setListItems(bank.getAccountList(pNo));
+		accountList = new JList<>(accounts.getListModel());
 	}
 	private void updateButtonStatus() {
 		if (customerList.getSelectedIndex() == -1) {
 			
 		} else {
 			// TO-DO
-		}
-		
+		}	
 	}
 
 	private void createMenuBar() {
