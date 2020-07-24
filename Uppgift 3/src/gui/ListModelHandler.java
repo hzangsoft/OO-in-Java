@@ -18,6 +18,10 @@ public class ListModelHandler<T> {
 		}
 	}
 	
+	public void clearListItems () {
+		listModel.clear();
+	}
+	
 	public DefaultListModel<T> getListModel() {
 		return listModel;
 	}

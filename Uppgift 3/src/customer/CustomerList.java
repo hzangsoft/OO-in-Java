@@ -21,7 +21,7 @@ public class CustomerList {
 	public ArrayList<String> getAllCustomers() {
 		ArrayList<String> customers = new ArrayList<String>();
 		for (Customer c : customerList) {
-			customers.add(c.toString());
+			customers.add(Long.toString(c.getSocialSecurityNumber()));
 		}
 		return customers;
 	}

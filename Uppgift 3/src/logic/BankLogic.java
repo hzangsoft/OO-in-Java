@@ -23,8 +23,7 @@ public class BankLogic {
 	public BankLogic() {
 		this.customerList = new CustomerList();
 		createTestData();
-		
-	}
+		}
 
 	
 	private void createTestData() {
@@ -35,7 +34,7 @@ public class BankLogic {
 		this.createCustomer("Karl Karlsson", 8505221898L);
 		this.createCustomer("Donald Duck", 9302205513L);
 		this.createCustomer("Pelle Persson", 6911258876L);
-		this.createCustomer("Lotta Larsson", 505121231L);
+		this.createCustomer("Lotta Larsson", 7505121231L);
 
 
 		// Creates accounts
@@ -47,78 +46,78 @@ public class BankLogic {
 		this.deposit(pNo, a, 100.0);
 		
 		a = this.createCreditAccount(pNo);
-		this.deposit(pNo, a, 100.0);
+		this.deposit(pNo, a, 200.0);
 		
 		a = this.createCreditAccount(pNo);
-		this.deposit(pNo, a, 100.0);
+		this.deposit(pNo, a, 300.0);
 		
 		a = this.createSavingsAccount(pNo);
-		this.deposit(pNo, a, 100.0);
+		this.deposit(pNo, a, 400.0);
 		
 		a = this.createSavingsAccount(pNo);
-		this.deposit(pNo, a, 100.0);
+		this.deposit(pNo, a, 500.0);
 		
 		a = this.createSavingsAccount(pNo);
-		this.deposit(pNo, a, 100.0);
+		this.deposit(pNo, a, 600.0);
 		
 		
 		pNo = 9302205513L;
 		a = this.createCreditAccount(pNo);
-		this.deposit(pNo, a, 100.0);
+		this.deposit(pNo, a, 700.0);
 		
 		a = this.createCreditAccount(pNo);
-		this.deposit(pNo, a, 100.0);
+		this.deposit(pNo, a, 800.0);
 		
 		a = this.createCreditAccount(pNo);
-		this.deposit(pNo, a, 100.0);
+		this.deposit(pNo, a, 900.0);
 		
 		a = this.createSavingsAccount(pNo);
-		this.deposit(pNo, a, 100.0);
+		this.deposit(pNo, a, 1000.0);
 		
 		a = this.createSavingsAccount(pNo);
-		this.deposit(pNo, a, 100.0);
+		this.deposit(pNo, a, 1100.0);
 		
 		a = this.createSavingsAccount(pNo);
-		this.deposit(pNo, a, 100.0);
+		this.deposit(pNo, a, 1200.0);
 		
 		pNo = 6911258876L;
 		a = this.createCreditAccount(pNo);
-		this.deposit(pNo, a, 100.0);
+		this.deposit(pNo, a, 1300.0);
 		
 		a = this.createCreditAccount(pNo);
-		this.deposit(pNo, a, 100.0);
+		this.deposit(pNo, a, 1400.0);
 		
 		a = this.createCreditAccount(pNo);
-		this.deposit(pNo, a, 100.0);
+		this.deposit(pNo, a, 1500.0);
 		
 		a = this.createSavingsAccount(pNo);
-		this.deposit(pNo, a, 100.0);
+		this.deposit(pNo, a, 1600.0);
 		
 		a = this.createSavingsAccount(pNo);
-		this.deposit(pNo, a, 100.0);
+		this.deposit(pNo, a, 1700.0);
 		
 		a = this.createSavingsAccount(pNo);
-		this.deposit(pNo, a, 100.0);
+		this.deposit(pNo, a, 1800.0);
 		
 		
-		pNo= 505121231L;
+		pNo= 7505121231L;
 		a = this.createCreditAccount(pNo);
-		this.deposit(pNo, a, 100.0);
-		
-		a = this.createCreditAccount(pNo);
-		this.deposit(pNo, a, 100.0);
+		this.deposit(pNo, a, 1900.0);
 		
 		a = this.createCreditAccount(pNo);
-		this.deposit(pNo, a, 100.0);
+		this.deposit(pNo, a, 2000.0);
+		
+		a = this.createCreditAccount(pNo);
+		this.deposit(pNo, a, 2100.0);
 		
 		a = this.createSavingsAccount(pNo);
-		this.deposit(pNo, a, 100.0);
+		this.deposit(pNo, a, 2200.0);
 		
 		a = this.createSavingsAccount(pNo);
-		this.deposit(pNo, a, 100.0);
+		this.deposit(pNo, a, 2300.0);
 		
 		a = this.createSavingsAccount(pNo);
-		this.deposit(pNo, a, 100.0);
+		this.deposit(pNo, a, 2400.0);
 		
 	}
 

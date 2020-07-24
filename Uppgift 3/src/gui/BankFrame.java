@@ -20,12 +20,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.*;
 
 import logic.BankLogic;
 
 public class BankFrame extends JFrame{
 	private static final int FRAME_WIDTH = 800;
-	private static final int FRAME_HEIGHT = 150;
+	private static final int FRAME_HEIGHT = 300;
 	private final int TEXT_WIDTH = 15;
 	
 	private BankLogic bank;
@@ -35,8 +37,10 @@ public class BankFrame extends JFrame{
 	private JTextField amountField = new JTextField(TEXT_WIDTH);
 	
 	private ListModelHandler<String> customers = new ListModelHandler<String>();
-	private ListModelHandler<String> accounts = new ListModelHandler<String>();
 	private JList<String> customerList;
+
+	
+	private ListModelHandler<String> accounts = new ListModelHandler<String>();
 	private JList<String> accountList;
 	
 	
@@ -49,57 +53,54 @@ public class BankFrame extends JFrame{
 	
 	private void createComponents() {
 
-		updateGUI();
-			
-		Border listBorder = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), "Kundlista");
-		Border customerBorder = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), "Kundinfo");
-		Border accountBorder = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), "Kontolista");
- 
+		
+		customers.setListItems(bank.getAllCustomers());
+		customerList = new JList<>(customers.getListModel());
+		customerList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
+		accounts.clearListItems();
+		accountList = new JList<>(accounts.getListModel());
+		accountList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+		ListSelectionListener listener = new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				int customerIndex = customerList.getSelectedIndex();
+				if ( customerIndex == -1) {
+					// Kundlistan är tom. Radera eventuell information
+					// i övriga paneler.
+					
+					//TO-DO
+				} else {
+					long pNo = Long.parseLong(customerList.getSelectedValue());	
+					nameField.setText("Kalle");
+					//Hämta kundens kontoinformation.
+					updateAccountList(pNo);
+				}
+//				updateGUI();
+			}
+		};
+
+		customerList.addListSelectionListener(listener);
+		
+
+//		Skapa huvudpanelen och de olika delpanelerna.
+		
 		JPanel mainPanel = new JPanel(new GridLayout(0,3));
-		JPanel listPanel = new JPanel(new GridLayout(0,1));
-		JPanel customerDataPanel = new JPanel(new GridLayout(0,2));
-		JPanel customerButtonPanel = new JPanel(new GridLayout(0,2));
-		JPanel customerPanel = new JPanel(new GridLayout(2,1));
-		JPanel accountListPanel = new JPanel(new GridLayout(0,1));
-		JPanel accountEntryPanel = new JPanel(new GridLayout(0,2));
-		JPanel accountButtonPanel = new JPanel(new GridLayout(0,2));
-		JPanel accountPanel = new JPanel(new GridLayout(3,1));
 
-		JScrollPane customerScrollPane = new JScrollPane(customerList);
-		listPanel.add(customerScrollPane);
-		listPanel.setBorder(listBorder);
-		mainPanel.add(listPanel);
-
-		customerDataPanel.add(new JLabel(" Namn"));
-		customerDataPanel.add(nameField);
-		customerDataPanel.add(new JLabel(" Personnummer"));
-		customerDataPanel.add(pNoField);
-		customerDataPanel.setBorder(customerBorder);
-		customerButtonPanel.add(createAddUserButton());
-		customerButtonPanel.add(createDeleteUserButton());
-		customerPanel.add(customerDataPanel);
-		customerPanel.add(customerButtonPanel);
-		mainPanel.add(customerPanel);
-
-		JScrollPane accountScrollPane = new JScrollPane(accountList);
-		accountListPanel.add(accountScrollPane);
-		accountPanel.add(accountListPanel);
-		accountListPanel.setBorder(accountBorder);
-		accountEntryPanel.add(new JLabel(" Summa"));
-		accountEntryPanel.add(nameField);
-		accountPanel.add(accountEntryPanel);
-		accountButtonPanel.add(createDepositButton());
-		accountButtonPanel.add(createWithDrawButton());
-		accountPanel.add(accountButtonPanel);
-
-		mainPanel.add(accountPanel);
+		mainPanel.add(createCustomerListPanel());
+		mainPanel.add(createCustomerPanel());
+		mainPanel.add(createAccountPanel());
 
 		mainPanel.setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
 		add(mainPanel);
 		
+		updateGUI();
+					
+//	Skapa menyerna
+		
 		createMenuBar();
 	}
-
+	
 	public void updateGUI() {
 		updateCustomerList();
 		updateButtonStatus();
@@ -107,22 +108,31 @@ public class BankFrame extends JFrame{
 	
 	private void updateCustomerList() {
 		customers.setListItems(bank.getAllCustomers());
-		customerList = new JList<>(customers.getListModel());
+		if (customerList.getModel().getSize() != -1) {
+			customerList.setSelectedIndex(2);
+		}
+
 	}
 
 	private void updateAccountList(long pNo) {
 		// Hämta lista över kundens konton som strängar
 		accounts.setListItems(bank.getAccountList(pNo));
-		accountList = new JList<>(accounts.getListModel());
+		
 	}
+	
 	private void updateButtonStatus() {
-		if (customerList.getSelectedIndex() == -1) {
-			
-		} else {
-			// TO-DO
-		}	
+		/*
+		 * if (customerList.getSelectedIndex() == -1) {
+		 * 
+		 * } else { // TO-DO }
+		 */
 	}
 
+	
+	/*
+	 * Metoder för att skapa menuer och submenyer.
+	 */	
+	
 	private void createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -244,6 +254,12 @@ public class BankFrame extends JFrame{
 		return item;
 	}
 	
+	
+	/*
+	 * Metoder för att skapa knappar
+	 */
+	
+	
 	private JButton createAddUserButton() {
 		class AddUserListener implements ActionListener {
 			public void actionPerformed(ActionEvent event) {
@@ -308,7 +324,74 @@ public class BankFrame extends JFrame{
 		button.addActionListener(listener);
 		return button;
 	}
+	
+	
+	
+	/*
+	 *  Metoder för att skapa paneler.
+	*/
+	private JPanel createCustomerListPanel() {
+		
+		/*
+		 * class CreateCustomerListListener implements ActionListener { public void
+		 * actionPerformed(ActionEvent event) { infoBox("Du har klickat i kundlistan!",
+		 * "Skundlistan"); } }
+		 */
+		JPanel listPanel = new JPanel(new GridLayout(0,1));		
+		Border listBorder = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), "Kundlista");
+		JScrollPane customerScrollPane = new JScrollPane(customerList);
+		
+		listPanel.add(customerScrollPane);
+		listPanel.setBorder(listBorder);
 
+		return listPanel;
+		
+	}
+
+	private JPanel createCustomerPanel() {
+		JPanel customerDataPanel = new JPanel(new GridLayout(2,2));
+		JPanel customerButtonPanel = new JPanel(new GridLayout(1,2));
+		JPanel customerPanel = new JPanel(new GridLayout(2,1));
+		Border customerBorder = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), "Kundinfo");
+
+		customerDataPanel.add(new JLabel(" Namn"));
+		customerDataPanel.add(nameField);
+		customerDataPanel.add(new JLabel(" Personnummer"));
+		customerDataPanel.add(pNoField);
+		customerDataPanel.setBorder(customerBorder);
+		customerButtonPanel.add(createAddUserButton());
+		customerButtonPanel.add(createDeleteUserButton());
+		customerPanel.add(customerDataPanel);
+		customerPanel.add(customerButtonPanel);
+		return customerPanel;
+		
+	}
+	
+	private JPanel createAccountPanel() {
+		Border accountBorder = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), "Kontolista");
+		JPanel accountListPanel = new JPanel(new GridLayout(0,1));
+		JPanel accountEntryPanel = new JPanel(new GridLayout(0,2));
+		JPanel accountButtonPanel = new JPanel(new GridLayout(0,2));
+		JPanel accountPanel = new JPanel(new GridLayout(3,1));
+
+
+		JScrollPane accountScrollPane = new JScrollPane(accountList);
+		accountListPanel.add(accountScrollPane);
+		accountPanel.add(accountListPanel);
+		accountListPanel.setBorder(accountBorder);
+		accountEntryPanel.add(new JLabel(" Summa"));
+		accountEntryPanel.add(amountField);
+		accountPanel.add(accountEntryPanel);
+		accountButtonPanel.add(createDepositButton());
+		accountButtonPanel.add(createWithDrawButton());
+		accountPanel.add(accountButtonPanel);
+
+		return accountPanel;
+		
+	}
+	
+	
+	
 	public static void infoBox(String message, String title)
     {
         JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE);
