@@ -1,9 +1,14 @@
+package hkastr5;
 /**
+ * 
+ * D0018D, Objektorienterad programmering i Java, Lp1-2, H20
+ * Inlämningsuppgift 1
+ * @author Håkan Strääf (hkastr-5@student.ltu.se)
+ * 
  * Klassen Customer hanterar all information om en av bankens kunder.
  * Förutom den grundläggande informationen om en kunden så hanteras
  * också kundens alla konton som lagras i en ArrayList.
  * 
- * @author Håkan Strääf (hkastr-5@student.ltu.se)
  * 
  */
 
@@ -12,8 +17,9 @@ import java.util.ListIterator;
 
 public class Customer {
 
-	private String name; // Kundens namn
-	private long socialSecurityNumber; // Kundens personnummer
+	private String name; // Kundens förnamn
+	private String surname; // Kundens efternamn
+	private String socialSecurityNumber; // Kundens personnummer
 	private final ArrayList<SavingsAccount> accountList; // Kundens konton
 
 	/**
@@ -24,9 +30,10 @@ public class Customer {
 	 * @param socialSecurityNumber
 	 *            Kundens personnummer
 	 */
-	public Customer(String name, long socialSecurityNumber) {
+	public Customer(String name, String surname, String socialSecurityNumber) {
 		super();
 		this.name = name;
+		this.surname = surname;
 		this.socialSecurityNumber = socialSecurityNumber;
 		this.accountList = new ArrayList<SavingsAccount>();
 	}
@@ -50,12 +57,21 @@ public class Customer {
 		this.name = name;
 	}
 
+		
+	public String getSurname() {
+		return surname;
+	}
+
+	public void setSurname(String surname) {
+		this.surname = surname;
+	}
+
 	/**
 	 * Getter-funktion för kundens personnummer,
 	 * 
 	 * @return Kundens personnummer
 	 */
-	public long getSocialSecurityNumber() {
+	public String getSocialSecurityNumber() {
 		return socialSecurityNumber;
 	}
 
@@ -65,7 +81,7 @@ public class Customer {
 	 * @param socialSecurityNumber
 	 *            Kundens nya personnummer
 	 */
-	public void setSocialSecurityNumber(long socialSecurityNumber) {
+	public void setSocialSecurityNumber(String socialSecurityNumber) {
 		this.socialSecurityNumber = socialSecurityNumber;
 	}
 
@@ -79,7 +95,7 @@ public class Customer {
 	 */
 	@Override
 	public String toString() {
-		return name + " " + socialSecurityNumber;
+		return socialSecurityNumber + " " + name + " " + surname;
 	}
 
 	/*
@@ -93,7 +109,7 @@ public class Customer {
 		result.add(this.toString());
 		if (!accountList.isEmpty()) {
 			for (SavingsAccount a : accountList) {
-				String s = a.toString();
+				String s = a.currentAccountStatement();
 				result.add(s);
 			}
 		}
@@ -155,19 +171,6 @@ public class Customer {
 		return newAccount.getAccountNumber();
 	}
 
-	/**
-	 * Skapa en strängrepresentation av ett avslutat konto
-	 * 
-	 * @param Indexet
-	 *            till det konto i kontolistan som avses.
-	 * @return Kontoinformation inkl. räntebesked.
-	 */
-	private String getClosingStatement(int index) {
-		String result = new String();
-		result = accountList.get(index).toString();
-		result += " " + accountList.get(index).closeAccount() + " kr";
-		return result;
-	}
 
 	/**
 	 * Stäng ett konto för kunden.
@@ -182,8 +185,7 @@ public class Customer {
 		if (index >= 0) {
 			// Sätt samman informationen som skall returneras
 			String result = new String();
-			result = accountList.get(index).toString();
-			result += " " + accountList.get(index).closeAccount() + " kr";
+			result = accountList.get(index).closingAccountStatement();
 			// Ta bort kontot ur listan
 			accountList.remove(index);
 			return result;
@@ -205,8 +207,7 @@ public class Customer {
 			// Iterera över alla konton
 			for (SavingsAccount a : accountList) {
 				String accountInfo = new String();
-				accountInfo = a.toString();
-				accountInfo += " " + a.closeAccount() + " kr";
+				accountInfo = a.closingAccountStatement();
 				result.add(accountInfo);
 			}
 			// Töm hela kontolistan.
@@ -269,7 +270,7 @@ public class Customer {
 		int index = getAccountIndex(accountId);
 		// Kontrollera om kontot finns, och hämta i så fall informationen.
 		if (index >= 0) {
-			return accountList.get(index).toString();
+			return accountList.get(index).currentAccountStatement();
 		} else {
 			return null;
 		}

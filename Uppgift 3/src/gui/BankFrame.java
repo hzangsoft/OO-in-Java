@@ -2,11 +2,14 @@ package gui;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.BorderLayout;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -18,6 +21,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.BoxLayout;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.ListSelectionModel;
@@ -26,8 +30,8 @@ import javax.swing.event.*;
 import logic.BankLogic;
 
 public class BankFrame extends JFrame{
-	private static final int FRAME_WIDTH = 800;
-	private static final int FRAME_HEIGHT = 300;
+	private static final int FRAME_WIDTH = 400;
+	private static final int FRAME_HEIGHT = 500;
 	private final int TEXT_WIDTH = 15;
 	
 	private BankLogic bank;
@@ -62,34 +66,15 @@ public class BankFrame extends JFrame{
 		accountList = new JList<>(accounts.getListModel());
 		accountList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-		ListSelectionListener listener = new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent e) {
-				int customerIndex = customerList.getSelectedIndex();
-				if ( customerIndex == -1) {
-					// Kundlistan är tom. Radera eventuell information
-					// i övriga paneler.
-					
-					//TO-DO
-				} else {
-					long pNo = Long.parseLong(customerList.getSelectedValue());	
-					nameField.setText("Kalle");
-					//Hämta kundens kontoinformation.
-					updateAccountList(pNo);
-				}
-//				updateGUI();
-			}
-		};
-
-		customerList.addListSelectionListener(listener);
-		
 
 //		Skapa huvudpanelen och de olika delpanelerna.
 		
-		JPanel mainPanel = new JPanel(new GridLayout(0,3));
+		JPanel mainPanel = new JPanel();
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 
-		mainPanel.add(createCustomerListPanel());
-		mainPanel.add(createCustomerPanel());
-		mainPanel.add(createAccountPanel());
+		mainPanel.add(createCustomerListPanel(), BorderLayout.NORTH);
+		mainPanel.add(createCustomerPanel(), BorderLayout.CENTER);
+		mainPanel.add(createAccountPanel(), BorderLayout.SOUTH);
 
 		mainPanel.setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
 		add(mainPanel);
@@ -335,34 +320,64 @@ public class BankFrame extends JFrame{
 		/*
 		 * class CreateCustomerListListener implements ActionListener { public void
 		 * actionPerformed(ActionEvent event) { infoBox("Du har klickat i kundlistan!",
-		 * "Skundlistan"); } }
+		 * "Kundlistan"); } }
 		 */
-		JPanel listPanel = new JPanel(new GridLayout(0,1));		
+		JPanel listPanel = new JPanel(new GridLayout(1,2,10,10));		
 		Border listBorder = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), "Kundlista");
 		JScrollPane customerScrollPane = new JScrollPane(customerList);
+		JPanel customerButtonPanel = new JPanel();
+		customerButtonPanel.setLayout(new BoxLayout(customerButtonPanel, BoxLayout.PAGE_AXIS));
+		customerButtonPanel.add(createAddUserButton());
+		customerButtonPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+		customerButtonPanel.add(createDeleteUserButton());
+
 		
 		listPanel.add(customerScrollPane);
+		listPanel.add(customerButtonPanel);
 		listPanel.setBorder(listBorder);
+		ListSelectionListener listener = new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				if (!e.getValueIsAdjusting()){
 
+					int customerIndex = customerList.getSelectedIndex();
+					if ( customerIndex == -1) {
+						// Kundlistan är tom. Radera eventuell information
+						// i övriga paneler.
+
+						//TO-DO
+					} else {
+						long pNo = Long.parseLong(customerList.getSelectedValue());	
+						nameField.setText("Kalle");
+						//Hämta kundens kontoinformation.
+						updateAccountList(pNo);
+					}
+				}
+			}
+		};
+
+		customerList.addListSelectionListener(listener);
 		return listPanel;
 		
 	}
 
 	private JPanel createCustomerPanel() {
-		JPanel customerDataPanel = new JPanel(new GridLayout(2,2));
-		JPanel customerButtonPanel = new JPanel(new GridLayout(1,2));
-		JPanel customerPanel = new JPanel(new GridLayout(2,1));
+		JPanel customerInfoPanel = new JPanel();
+		customerInfoPanel.setLayout(new BoxLayout(customerInfoPanel, BoxLayout.LINE_AXIS));
+
+		
+		JPanel customerPanel = new JPanel(new GridLayout(1,1));
 		Border customerBorder = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), "Kundinfo");
 
-		customerDataPanel.add(new JLabel(" Namn"));
-		customerDataPanel.add(nameField);
-		customerDataPanel.add(new JLabel(" Personnummer"));
-		customerDataPanel.add(pNoField);
-		customerDataPanel.setBorder(customerBorder);
-		customerButtonPanel.add(createAddUserButton());
-		customerButtonPanel.add(createDeleteUserButton());
-		customerPanel.add(customerDataPanel);
-		customerPanel.add(customerButtonPanel);
+		customerInfoPanel.add(new JLabel(" Namn"));
+		customerInfoPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+		customerInfoPanel.add(nameField);
+		customerInfoPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+		customerInfoPanel.add(new JLabel(" Personnummer"));
+		customerInfoPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+		customerInfoPanel.add(pNoField);
+		
+		customerPanel.setBorder(customerBorder);		
+		customerPanel.add(customerInfoPanel);
 		return customerPanel;
 		
 	}
@@ -371,8 +386,14 @@ public class BankFrame extends JFrame{
 		Border accountBorder = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), "Kontolista");
 		JPanel accountListPanel = new JPanel(new GridLayout(0,1));
 		JPanel accountEntryPanel = new JPanel(new GridLayout(0,2));
-		JPanel accountButtonPanel = new JPanel(new GridLayout(0,2));
-		JPanel accountPanel = new JPanel(new GridLayout(3,1));
+		JPanel accountPanel = new JPanel();
+		accountPanel.setLayout(new BoxLayout(accountPanel,BoxLayout.LINE_AXIS));
+		
+		JPanel accountButtonPanel = new JPanel();
+		accountButtonPanel.setLayout(new BoxLayout(accountButtonPanel, BoxLayout.PAGE_AXIS));
+		accountButtonPanel.add(createDepositButton());
+		accountButtonPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+		accountButtonPanel.add(createWithDrawButton());
 
 
 		JScrollPane accountScrollPane = new JScrollPane(accountList);
@@ -381,9 +402,7 @@ public class BankFrame extends JFrame{
 		accountListPanel.setBorder(accountBorder);
 		accountEntryPanel.add(new JLabel(" Summa"));
 		accountEntryPanel.add(amountField);
-		accountPanel.add(accountEntryPanel);
-		accountButtonPanel.add(createDepositButton());
-		accountButtonPanel.add(createWithDrawButton());
+
 		accountPanel.add(accountButtonPanel);
 
 		return accountPanel;

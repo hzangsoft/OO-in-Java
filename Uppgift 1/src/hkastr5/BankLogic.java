@@ -1,9 +1,12 @@
+package hkastr5;
 /**
+ * 
+ * D0018D, Objektorienterad programmering i Java, Lp1-2, H20
+ * Inlämningsuppgift 1
+ * @author Håkan Strääf (hkastr-5@student.ltu.se)
  * 
  * Klassen Banklogic hanterar bankens samtliga kunder. Informationen 
  * om kunderna läggs i en ArrayList.
- * 
- * @author Håkan Strääf (hkastr-5@student.ltu.se)
  * 
  */
 
@@ -45,7 +48,7 @@ public class BankLogic {
 	 * @return True om kunden existerar.
 	 * @return False om kunden inte existerar.
 	 */
-	private boolean customerExists(long pNo) {
+	private boolean customerExists(String pNo) {
 		return getCustomerIndex(pNo) >= 0;
 	}
 
@@ -57,14 +60,14 @@ public class BankLogic {
 	 * @return Indexet om kunden existerar.
 	 * @return -1 om kunden inte existerar.
 	 */
-	private int getCustomerIndex(long pNo) {
+	private int getCustomerIndex(String pNo) {
 		int index = -1;
 
 		// Iterera över listan tills vi har hittat kunden eller tills listan är
 		// slut.
 		ListIterator<Customer> customerIterator = customerList.listIterator();
 		while ((customerIterator.hasNext()) && (index == -1)) {
-			if (customerIterator.next().getSocialSecurityNumber() == pNo) {
+			if (customerIterator.next().getSocialSecurityNumber().equals(pNo)) {
 				index = customerIterator.previousIndex();
 			}
 		}
@@ -72,23 +75,25 @@ public class BankLogic {
 	}
 
 	/**
-	 * Skapar en ny kund med namnet name samt personnummer pNo, kunden skapas
+	 * Skapar en ny kund med förnamnet name, efternamnet surname samt personnummer pNo. Kunden skapas
 	 * endast om det inte finns någon kund med personnummer pNo.
 	 * 
 	 * @param name
-	 *            Kundens namn
+	 *            Kundens förnamn
+	 * @param surname
+	 *            Kundens efternamn
 	 * @param pNo
 	 *            Kundens personnummer
 	 * @return True om kund skapades.
 	 * @return False om kund inte kunde skapas.
 	 */
-	public boolean createCustomer(String name, long pNo) {
+	public boolean createCustomer(String name, String surname, String pNo) {
 		// Kontrollera om kunden finns
 		if (customerExists(pNo)) {
 			return false;
 		} else {
 			// Lägg till kunden.
-			return customerList.add(new Customer(name, pNo));
+			return customerList.add(new Customer(name, surname, pNo));
 		}
 	}
 
@@ -102,7 +107,7 @@ public class BankLogic {
 	 * @return En ArrayList med strängar innehållande kundinformation.
 	 * @return Null om kunden inte fanns
 	 */
-	public ArrayList<String> getCustomer(long pNo) {
+	public ArrayList<String> getCustomer(String pNo) {
 		int index = getCustomerIndex(pNo);
 
 		// Kontrollera om kunden finns och returnera kundinfo i så fall
@@ -114,28 +119,43 @@ public class BankLogic {
 	}
 
 	/**
-	 * Byter namn på kund med personnummer pNo till name.
+	 * Byter för- och efternamn på kund med personnummer pNo till name och surname.
 	 * 
 	 * @param name
-	 *            Nya namnet
+	 *            Nya förnamnet
+	 * @param surname
+	 *            Nya efternamnet
 	 * @param pNo
 	 *            Kundens personnummer
 	 * @return True om namnet ändrades,
 	 * @return False om namnet inte ändrades, t.ex.om kunden inte fanns.
 	 */
-	public boolean changeCustomerName(String name, long pNo) {
+	public boolean changeCustomerName(String name, String surname, String pNo) {
 		int index = getCustomerIndex(pNo);
-
+		boolean nameChanged = false;
+		
 		// Kontrollera om kunden finns
-		if (index == -1) {
-			return false;
-		} else {
-			// Ändra kundens namn.
+		if (index > -1) {
+
 			Customer customerToChange = customerList.get(index);
-			customerToChange.setName(name);
-			customerList.set(index, customerToChange);
-			return true;
+
+			// Kontrollera om förnamnet ska ändras och utför ändringen i så fall
+			if (!name.equals("")) {
+				customerToChange.setName(name);
+				nameChanged = true;
+			}
+			// Kontrollera om efterrnamnet ska ändras och utför ändringen i så fall
+			if (!surname.equals("")) {
+				customerToChange.setSurname(surname);
+				nameChanged = true;
+			}
+			
+			// Spara den nya kundinformation om något av namnen har ändrats			
+			if (nameChanged) {
+				customerList.set(index, customerToChange);
+			}
 		}
+		return nameChanged;
 	}
 
 	/**
@@ -149,7 +169,7 @@ public class BankLogic {
 	 * @return Returnerar null om ingen kund togs bort
 	 */
 
-	public ArrayList<String> deleteCustomer(long pNo) {
+	public ArrayList<String> deleteCustomer(String pNo) {
 		int index = getCustomerIndex(pNo);
 
 		// Kontrollera om kunden finns
@@ -171,7 +191,7 @@ public class BankLogic {
 	 * @return Kontonumret som det skapade kontot fick.
 	 * @return –1 om inget konto skapades.
 	 */
-	public int createSavingsAccount(long pNo) {
+	public int createSavingsAccount(String pNo) {
 		int index = getCustomerIndex(pNo);
 
 		// Kontrollera om kunden finns
@@ -194,7 +214,7 @@ public class BankLogic {
 	 *         räntesats).
 	 * @return Null om konto inte finns eller om det inte tillhör kunden
 	 */
-	public String getAccount(long pNo, int accountId) {
+	public String getAccount(String pNo, int accountId) {
 		int index = getCustomerIndex(pNo);
 
 		// Kontrollera om kunden finns
@@ -218,17 +238,16 @@ public class BankLogic {
 	 *            Summan som sätts in
 	 * @return True om det gick bra annars false
 	 */
-	public boolean deposit(long pNo, int accountId, double amount) {
-		boolean result = true;
+	public boolean deposit(String pNo, int accountId, double amount) {
+
 		int index = getCustomerIndex(pNo);
 
 		// Kontrollera om kunden finns
 		if (index >= 0) {
 			return customerList.get(index).deposit(accountId, amount);
 		} else {
-			result = false;
+			return false;
 		}
-		return result;
 	}
 
 	/**
@@ -242,17 +261,15 @@ public class BankLogic {
 	 *            Summan som tas ut
 	 * @return True om det gick bra annars false
 	 */
-	public boolean withdraw(long pNo, int accountId, double amount) {
-		boolean result = true;
+	public boolean withdraw(String pNo, int accountId, double amount) {
 
 		// Kontrollera om kunden finns
 		int index = getCustomerIndex(pNo);
 		if (index >= 0) {
 			return customerList.get(index).withdraw(accountId, amount);
 		} else {
-			result = false;
+			return false;
 		}
-		return result;
 	}
 
 	/**
@@ -266,10 +283,10 @@ public class BankLogic {
 	 * @param accountId
 	 *            Kundens kontonummer
 	 * @return En string som ger information om kontot, inklusive räntan man får
-	 *         på pengarna.
+	 *         på kontobeloppet.
 	 * @return Returnerar null om inget konto togs bort
 	 */
-	public String closeAccount(long pNo, int accountId) {
+	public String closeAccount(String pNo, int accountId) {
 		// Kontrollera om kunden finns
 		int index = getCustomerIndex(pNo);
 		if (index >= 0) {

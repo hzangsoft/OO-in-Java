@@ -97,8 +97,6 @@ public class Customer {
 				accountNumber = a.getAccountNumber();
 				result.add(accountNumber.toString());
 			}
-			// Töm hela kontolistan.
-			accountList.clear();
 		}
 		return result;
 	}

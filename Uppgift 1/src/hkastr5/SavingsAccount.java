@@ -1,7 +1,12 @@
+package hkastr5;
 /**
+ * 
+ * D0018D, Objektorienterad programmering i Java, Lp1-2, H20
+ * Inlämningsuppgift 1
+ * @author Håkan Strääf (hkastr-5@student.ltu.se)
+ * 
  * Klassen SavingsAccount hanterar ett sparkonto i banken.
  * 
- * @author Håkan Strääf (hkastr-5@student.ltu.se)
  * 
  */
 public class SavingsAccount {
@@ -50,7 +55,7 @@ public class SavingsAccount {
 	 * 
 	 * @return Det aktuella saldot på kontot.
 	 */
-	private double getBalance() {
+	public double getBalance() {
 		return balance;
 	}
 
@@ -95,8 +100,7 @@ public class SavingsAccount {
 	 * 
 	 * @return En sträng med kontoinformation
 	 */
-	@Override
-	public String toString() {
+	public String currentAccountStatement() {
 		String s = new String();
 		s += accountNumber + " ";
 		s += balance + " kr ";
@@ -104,6 +108,21 @@ public class SavingsAccount {
 		s += interestRate + " %";
 		return s;
 	}
+
+	/*
+	 * Generera en strängrepresentation av kontoinformationen
+	 * 
+	 * @return En sträng med kontoinformation
+	 */
+	public String closingAccountStatement() {
+		String s = new String();
+		s += accountNumber + " ";
+		s += balance + " kr ";
+		s += "Sparkonto ";
+		s += calculateInterest() + " kr";
+		return s;
+	}
+	
 
 	/**
 	 * Kontrollerar om kontot är öppet.
@@ -123,7 +142,7 @@ public class SavingsAccount {
 	 * @return Sant om det gick bra, falst annars.
 	 */
 	public boolean deposit(double amount) {
-		if (accountOpen) {
+		if (accountOpen && (amount > 0)) {
 			balance += amount;
 			return true;
 		} else {
@@ -140,7 +159,7 @@ public class SavingsAccount {
 	 * @return True om det gick bra, false i annat fall.
 	 */
 	public boolean withdraw(double amount) {
-		if (accountOpen) {
+		if (accountOpen && (amount > 0.0)) {
 			if (balance >= amount) {
 				balance -= amount;
 				return true;
