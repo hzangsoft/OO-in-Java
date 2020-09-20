@@ -12,7 +12,7 @@ package hkastr5;
 public class SavingsAccount {
 	// En klassvariabel som används för att generera unika kontonummer.
 	private static int latestAccountNumber = 1000;
-	
+
 	private final int accountNumber; // Kontonumret
 	private double balance; // Kontots saldo
 	private double interestRate; // Kontots räntesats
@@ -122,7 +122,7 @@ public class SavingsAccount {
 		s += calculateInterest() + " kr";
 		return s;
 	}
-	
+
 
 	/**
 	 * Kontrollerar om kontot är öppet.

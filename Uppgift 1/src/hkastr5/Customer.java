@@ -57,7 +57,7 @@ public class Customer {
 		this.name = name;
 	}
 
-		
+
 	public String getSurname() {
 		return surname;
 	}

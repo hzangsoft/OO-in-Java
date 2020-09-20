@@ -133,7 +133,7 @@ public class BankLogic {
 	public boolean changeCustomerName(String name, String surname, String pNo) {
 		int index = getCustomerIndex(pNo);
 		boolean nameChanged = false;
-		
+
 		// Kontrollera om kunden finns
 		if (index > -1) {
 
@@ -149,7 +149,7 @@ public class BankLogic {
 				customerToChange.setSurname(surname);
 				nameChanged = true;
 			}
-			
+
 			// Spara den nya kundinformation om något av namnen har ändrats			
 			if (nameChanged) {
 				customerList.set(index, customerToChange);
