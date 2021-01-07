@@ -1,24 +1,25 @@
-package customer;
+package hkastr5;
 /**
+ * 
+ * D0018D, Objektorienterad programmering i Java, Lp1-2, H20
+ * Inlämningsuppgift 1
+ * @author Håkan Strääf (hkastr-5@student.ltu.se)
+ * 
  * Klassen Customer hanterar all information om en av bankens kunder.
  * Förutom den grundläggande informationen om en kunden så hanteras
  * också kundens alla konton som lagras i en ArrayList.
  * 
- * @author Håkan Strääf (hkastr-5@student.ltu.se)
  * 
  */
 
 import java.util.ArrayList;
 import java.util.ListIterator;
 
-import accounts.Account;
-import accounts.CreditAccount;
-import accounts.SavingsAccount;
-
 public class Customer {
 
-	private String name; // Kundens namn
-	private long socialSecurityNumber; // Kundens personnummer
+	private String name; // Kundens förnamn
+	private String surname; // Kundens efternamn
+	private String socialSecurityNumber; // Kundens personnummer
 	private final ArrayList<Account> accountList; // Kundens konton
 
 	/**
@@ -26,33 +27,56 @@ public class Customer {
 	 * 
 	 * @param name
 	 *            Kundens namn
+	 * @param surname           
+	 *            Kundens efternamn
 	 * @param socialSecurityNumber
 	 *            Kundens personnummer
 	 */
-	public Customer(String name, long socialSecurityNumber) {
+	public Customer(String name, String surname, String socialSecurityNumber) {
 		super();
 		this.name = name;
+		this.surname = surname;
 		this.socialSecurityNumber = socialSecurityNumber;
 		this.accountList = new ArrayList<Account>();
 	}
 
 	/**
-	 * Getter-funktion för kundens namn
+	 * Getter-funktion för kundens förnamn
 	 * 
-	 * @return Kundens namn
+	 * @return Kundens förnamn
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * Setter-funktion för kundens namn
+	 * Setter-funktion för kundens förnamn
 	 * 
 	 * @param name
-	 *            Kundens nya namn.
+	 *            Kundens nya förnamn.
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	/**
+	 * Getter-funktion för kundens efternamn
+	 * 
+	 * @return Kundens efternamn
+	 */
+	public String getSurname() {
+		return surname;
+	}
+
+	/**
+	 * Setter-funktion för kundens efternamn
+	 * 
+	 * @param name
+	 *            Kundens nya efternamn.
+	 */
+
+	public void setSurname(String surname) {
+		this.surname = surname;
 	}
 
 	/**
@@ -60,17 +84,17 @@ public class Customer {
 	 * 
 	 * @return Kundens personnummer
 	 */
-	public long getSocialSecurityNumber() {
+	public String getSocialSecurityNumber() {
 		return socialSecurityNumber;
 	}
 
 	/**
-	 * Setter-funktion för kundens namn
+	 * Setter-funktion för kundens personnummer.
 	 * 
 	 * @param socialSecurityNumber
 	 *            Kundens nya personnummer
 	 */
-	public void setSocialSecurityNumber(long socialSecurityNumber) {
+	public void setSocialSecurityNumber(String socialSecurityNumber) {
 		this.socialSecurityNumber = socialSecurityNumber;
 	}
 
@@ -84,7 +108,7 @@ public class Customer {
 	 */
 	@Override
 	public String toString() {
-		return name + " " + socialSecurityNumber;
+		return socialSecurityNumber + " " + name + " " + surname;
 	}
 
 	/*
@@ -98,7 +122,7 @@ public class Customer {
 		result.add(this.toString());
 		if (!accountList.isEmpty()) {
 			for (Account a : accountList) {
-				String s = a.toString();
+				String s = a.currentAccountStatement();
 				result.add(s);
 			}
 		}
@@ -114,8 +138,17 @@ public class Customer {
 	 * @return False om kontonumret inte existerar.
 	 */
 	public boolean accountExists(int accountNo) {
-		return getAccountIndex(accountNo) >= 0;
+		ListIterator<Account> accountIterator = accountList
+				.listIterator();
 
+		// Iterera över alla konton tills kontonumret har hittas eller
+		// tills listan är slut.
+		while (accountIterator.hasNext()) {
+			if (accountIterator.next().getAccountNumber() == accountNo) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -126,7 +159,7 @@ public class Customer {
 	 * @return Indexet om kontot existerar.
 	 * @return -1 om kontot inte existerar.
 	 */
-	private int getAccountIndex(int accountNo) {
+	public int getAccountIndex(int accountNo) {
 		int index = -1;
 		ListIterator<Account> accountIterator = accountList.listIterator();
 		// Iterera över alla konton tills kontonumret har hittas eller
@@ -145,7 +178,7 @@ public class Customer {
 	 * @return Kontonumret för det nyskapade kontot
 	 */
 	public int createSavingsAccount() {
-		Account newAccount = new SavingsAccount();
+		SavingsAccount newAccount = new SavingsAccount();
 		accountList.add(newAccount);
 		return newAccount.getAccountNumber();
 	}
@@ -156,23 +189,9 @@ public class Customer {
 	 * @return Kontonumret för det nyskapade kontot
 	 */
 	public int createCreditAccount() {
-		Account newAccount = new CreditAccount();
+		CreditAccount newAccount = new CreditAccount();
 		accountList.add(newAccount);
 		return newAccount.getAccountNumber();
-	}
-
-	/**
-	 * Skapa en strängrepresentation av ett avslutat konto
-	 * 
-	 * @param Indexet
-	 *            till det konto i kontolistan som avses.
-	 * @return Kontoinformation inkl. räntebesked.
-	 */
-	private String getClosingStatement(int index) {
-		String result = new String();
-		result = accountList.get(index).toString();
-		result += " " + accountList.get(index).closeAccount() + " kr";
-		return result;
 	}
 
 	/**
@@ -188,8 +207,7 @@ public class Customer {
 		if (index >= 0) {
 			// Sätt samman informationen som skall returneras
 			String result = new String();
-			result = accountList.get(index).toString();
-			result += " " + accountList.get(index).closeAccount() + " kr";
+			result = accountList.get(index).closingAccountStatement();
 			// Ta bort kontot ur listan
 			accountList.remove(index);
 			return result;
@@ -208,12 +226,10 @@ public class Customer {
 		ArrayList<String> result = new ArrayList<String>();
 		result.add(this.toString());
 		if (!accountList.isEmpty()) {
-		
 			// Iterera över alla konton
 			for (Account a : accountList) {
 				String accountInfo = new String();
-				accountInfo = a.toString();
-				accountInfo += " " + a.closeAccount() + " kr";
+				accountInfo = a.closingAccountStatement();
 				result.add(accountInfo);
 			}
 			// Töm hela kontolistan.
@@ -276,26 +292,26 @@ public class Customer {
 		int index = getAccountIndex(accountId);
 		// Kontrollera om kontot finns, och hämta i så fall informationen.
 		if (index >= 0) {
-			return accountList.get(index).toString();
+			return accountList.get(index).currentAccountStatement();
 		} else {
 			return null;
 		}
 	}
-	
+
+
 	/**
-	 * Hämtar en lista som innehåller presentation av konto samt alla
-	 * transaktioner som gjorts på kontot.
+	 * Returnerar en sträng med information om kontot.
 	 * 
 	 * @param accountId
-	 *            Kontonumret för det aktuella kontot.
-	 * @return En ArrayList med strängar innehållande relevant information
+	 *            Kundens kontonummer
+	 * @return Null om kontot inte fanns
+	 * @return En sträng med kontoinformation om kontot fanns
 	 */
-	public ArrayList<String> getTransactions(int accountId) {
-		int accountIndex = getAccountIndex(accountId);
-
-		// Kontrollera om kontot finns
-		if (accountIndex >= 0) {
-				return accountList.get(accountIndex).getTransactions();
+	public ArrayList <String> getTransactions(int accountId) {
+		int index = getAccountIndex(accountId);
+		// Kontrollera om kontot finns, och hämta i så fall informationen.
+		if (index >= 0) {
+			return accountList.get(index).getTransactions();
 		} else {
 			return null;
 		}

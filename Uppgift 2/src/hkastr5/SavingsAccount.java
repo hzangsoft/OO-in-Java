@@ -1,10 +1,14 @@
-package accounts;
+package hkastr5;
 /**
  * 
  */
 
 /**
- * @author Håkan
+ * 
+ * D0018D, Objektorienterad programmering i Java, Lp1-2, H20
+ * Inlämningsuppgift 1
+ * @author Håkan Strääf (hkastr-5@student.ltu.se)
+ * 
  *
  */
 public class SavingsAccount extends Account {
@@ -68,4 +72,35 @@ public class SavingsAccount extends Account {
 			return false;
 		}
 	}
+	
+	/*
+	 * Generera en strängrepresentation av kontoinformationen
+	 * 
+	 * @return En sträng med kontoinformation
+	 */
+	@Override
+	public String currentAccountStatement() {
+		String s = new String();
+		s += getAccountNumber() + " ";
+		s += String.format("%.2f", getBalance()) + " kr ";
+		s += "Sparkonto ";
+		s += String.format("%.1f", getInterestRate()) + " %";
+		return s;
+	}
+
+	/*
+	 * Generera en strängrepresentation av kontoinformationen
+	 * 
+	 * @return En sträng med kontoinformation
+	 */
+	@Override
+	public String closingAccountStatement() {
+		String s = new String();
+		s += getAccountNumber() + " ";
+		s += String.format("%.2f", getBalance()) + " kr ";
+		s += "Sparkonto ";
+		s += String.format("%.2f", calculateInterest()) + " kr";
+		return s;
+	}
+
 }

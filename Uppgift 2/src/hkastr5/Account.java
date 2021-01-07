@@ -1,15 +1,16 @@
-package accounts;
+package hkastr5;
 
 
 import java.util.ArrayList;
 import java.util.ListIterator;
 
-import transactions.Transaction;
-
 /**
- * Klassen Account hanterar gemensamma aspekter av olika kontotyper i banken.
  * 
+ * D0018D, Objektorienterad programmering i Java, Lp1-2, H20
+ * Inlämningsuppgift 1
  * @author Håkan Strääf (hkastr-5@student.ltu.se)
+ * 
+ * Klassen Account hanterar gemensamma aspekter av olika kontotyper i banken.
  * 
  */
 abstract public class Account {
@@ -110,13 +111,20 @@ abstract public class Account {
 		return latestAccountNumber;
 	}
 
+	
 	/*
 	 * Generera en strängrepresentation av kontoinformationen
 	 * 
 	 * @return En sträng med kontoinformation
 	 */
-	@Override
-	abstract public String toString();
+	abstract public String currentAccountStatement();
+
+	/*
+	 * Generera en strängrepresentation av kontoinformationen
+	 * 
+	 * @return En sträng med kontoinformation
+	 */
+	abstract public String closingAccountStatement();
 	
 	/**
 	 * Kontrollerar om kontot är öppet.

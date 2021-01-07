@@ -1,4 +1,11 @@
-package customer;
+package hkastr5;
+
+/**
+ * D0018D, Objektorienterad programmering i Java, Lp1-2, H20
+ * Inlämningsuppgift 1
+ * @author Håkan Strääf (hkastr-5@student.ltu.se)
+ * 
+ * */
 
 import java.util.ArrayList;
 import java.util.ListIterator;
@@ -34,7 +41,7 @@ public class CustomerList {
 	 * @return True om kunden existerar.
 	 * @return False om kunden inte existerar.
 	 */
-	public boolean customerExists(long pNo) {
+	public boolean customerExists(String pNo) {
 		return getCustomerIndex(pNo) >= 0;
 	}
 
@@ -46,28 +53,28 @@ public class CustomerList {
 	 * @return Indexet om kunden existerar.
 	 * @return -1 om kunden inte existerar.
 	 */
-	private int getCustomerIndex(long pNo) {
+	private int getCustomerIndex(String pNo) {
 		int index = -1;
 
 		// Iterera över listan tills vi har hittat kunden eller tills listan är
 		// slut.
 		ListIterator<Customer> customerIterator = customerList.listIterator();
 		while ((customerIterator.hasNext()) && (index == -1)) {
-			if (customerIterator.next().getSocialSecurityNumber() == pNo) {
+			if (customerIterator.next().getSocialSecurityNumber().equals(pNo)) {
 				index = customerIterator.previousIndex();
 			}
 		}
 		return index;
 	}
 
-	public boolean addCustomer(String name, long pNo) {
+	public boolean addCustomer(String name, String surname, String pNo) {
 		int index = getCustomerIndex(pNo);
 
 		// Kontrollera om kunden redan finns och returnera kundinfo i så fall
 		if (index >= 0) {
 			return false;
 		} else {
-			return customerList.add(new Customer(name,pNo));
+			return customerList.add(new Customer(name, surname, pNo));
 		}
 
 	}
@@ -81,7 +88,7 @@ public class CustomerList {
 	 * @return En ArrayList med strängar innehållande kundinformation.
 	 * @return Null om kunden inte fanns
 	 */
-	public ArrayList<String> getCustomerInfo(long pNo) {
+	public ArrayList<String> getCustomerInfo(String pNo) {
 		int index = getCustomerIndex(pNo);
 
 		// Kontrollera om kunden finns och returnera kundinfo i så fall
@@ -102,7 +109,7 @@ public class CustomerList {
 	 * @return True om namnet ändrades,
 	 * @return False om namnet inte ändrades, t.ex.om kunden inte fanns.
 	 */
-	public boolean changeCustomerName(String name, long pNo) {
+	public boolean changeCustomerName(String name, String surname, String pNo) {
 		int index = getCustomerIndex(pNo);
 
 		// Kontrollera om kunden finns
@@ -112,6 +119,7 @@ public class CustomerList {
 			// Ändra kundens namn.
 			Customer customerToChange = customerList.get(index);
 			customerToChange.setName(name);
+			customerToChange.setSurname(surname);
 			customerList.set(index, customerToChange);
 			return true;
 		}
@@ -128,7 +136,7 @@ public class CustomerList {
 	 * @return Returnerar null om ingen kund togs bort
 	 */
 
-	public ArrayList<String> deleteCustomer(long pNo) {
+	public ArrayList<String> deleteCustomer(String pNo) {
 		int index = getCustomerIndex(pNo);
 
 		// Kontrollera om kunden finns
@@ -150,7 +158,7 @@ public class CustomerList {
 	 * @return Kontonumret som det skapade kontot fick.
 	 * @return –1 om inget konto skapades.
 	 */
-	public int createSavingsAccount(long pNo) {
+	public int createSavingsAccount(String pNo) {
 		int index = getCustomerIndex(pNo);
 
 		// Kontrollera om kunden finns
@@ -172,7 +180,7 @@ public class CustomerList {
 	 *         räntesats).
 	 * @return Null om konto inte finns eller om det inte tillhör kunden
 	 */
-	public String getAccount(long pNo, int accountId) {
+	public String getAccount(String pNo, int accountId) {
 		int index = getCustomerIndex(pNo);
 
 		// Kontrollera om kunden finns
@@ -196,7 +204,7 @@ public class CustomerList {
 	 *            Summan som sätts in
 	 * @return True om det gick bra annars false
 	 */
-	public boolean deposit(long pNo, int accountId, double amount) {
+	public boolean deposit(String pNo, int accountId, double amount) {
 		boolean result = true;
 		int index = getCustomerIndex(pNo);
 
@@ -220,7 +228,7 @@ public class CustomerList {
 	 *            Summan som tas ut
 	 * @return True om det gick bra annars false
 	 */
-	public boolean withdraw(long pNo, int accountId, double amount) {
+	public boolean withdraw(String pNo, int accountId, double amount) {
 		boolean result = true;
 
 		// Kontrollera om kunden finns
@@ -247,7 +255,7 @@ public class CustomerList {
 	 *         på pengarna.
 	 * @return Returnerar null om inget konto togs bort
 	 */
-	public String closeAccount(long pNo, int accountId) {
+	public String closeAccount(String pNo, int accountId) {
 		// Kontrollera om kunden finns
 		int index = getCustomerIndex(pNo);
 		if (index >= 0) {
@@ -265,7 +273,7 @@ public class CustomerList {
 	 * @return Kontonumret för det skapade kontot om allt gick bra
 	 * @return -1 om inget konto skapades
 	 */
-	public int createCreditAccount(long pNo) {
+	public int createCreditAccount(String pNo) {
 		int index = getCustomerIndex(pNo);
 
 		// Kontrollera om kunden finns
@@ -287,7 +295,7 @@ public class CustomerList {
 	 *            Kontonumret för det aktuella kontot.
 	 * @return En ArrayList med strängar innehållande relevant information
 	 */
-	public ArrayList<String> getTransactions(long pNo, int accountId) {
+	public ArrayList<String> getTransactions(String pNo, int accountId) {
 		int customerIndex = getCustomerIndex(pNo);
 
 		// Kontrollera om kunden finns
@@ -295,13 +303,11 @@ public class CustomerList {
 			// Kontrollera om kontot finns
 			if (customerList.get(customerIndex).accountExists(accountId)) {
 				return customerList.get(customerIndex).getTransactions(accountId);
-			} else {
+			} else 
 				return null;
-			}
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
-
-
 }

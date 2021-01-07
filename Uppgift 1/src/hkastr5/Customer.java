@@ -27,6 +27,8 @@ public class Customer {
 	 * 
 	 * @param name
 	 *            Kundens namn
+	 * @param surname           
+	 *            Kundens efternamn
 	 * @param socialSecurityNumber
 	 *            Kundens personnummer
 	 */
@@ -39,28 +41,39 @@ public class Customer {
 	}
 
 	/**
-	 * Getter-funktion för kundens namn
+	 * Getter-funktion för kundens förnamn
 	 * 
-	 * @return Kundens namn
+	 * @return Kundens förnamn
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * Setter-funktion för kundens namn
+	 * Setter-funktion för kundens förnamn
 	 * 
 	 * @param name
-	 *            Kundens nya namn.
+	 *            Kundens nya förnamn.
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
-
+	/**
+	 * Getter-funktion för kundens efternamn
+	 * 
+	 * @return Kundens efternamn
+	 */
 	public String getSurname() {
 		return surname;
 	}
+
+	/**
+	 * Setter-funktion för kundens efternamn
+	 * 
+	 * @param name
+	 *            Kundens nya efternamn.
+	 */
 
 	public void setSurname(String surname) {
 		this.surname = surname;

@@ -1,10 +1,14 @@
-package accounts;
+package hkastr5;
 /**
  * 
  */
 
 /**
- * @author Håkan
+ *
+ * D0018D, Objektorienterad programmering i Java, Lp1-2, H20
+ * Inlämningsuppgift 1
+ * @author Håkan Strääf (hkastr-5@student.ltu.se)
+ * 
  *
  */
 public class CreditAccount extends Account {
@@ -20,20 +24,8 @@ public class CreditAccount extends Account {
 		super(balance, interestRate);
 	}
 
-	/* (non-Javadoc)
-	 * @see Account#toString()
-	 */
-	@Override
-	public String toString() {
-		String s = new String();
-		s += getAccountNumber() + " ";
-		s += getBalance() + " kr ";
-		s += "Kreditkonto ";
-		s += getInterestRate() + " %";
-		return s;
-	}
 
-	/* (non-Javadoc)
+/* (non-Javadoc)
 	 * @see Account#withdraw(double)
 	 */
 	@Override
@@ -69,6 +61,36 @@ public class CreditAccount extends Account {
 		} else {
 			setInterestRate(DEBIT_RATE);
 		}
-		
 	}
+
+	/*
+	 * Generera en strängrepresentation av kontoinformationen
+	 * 
+	 * @return En sträng med kontoinformation
+	 */
+	@Override
+	public String currentAccountStatement() {
+		String s = new String();
+		s += getAccountNumber() + " ";
+		s += String.format("%.2f", getBalance()) + " kr ";
+		s += "Kreditkonto ";
+		s += String.format("%.1f", getInterestRate()) + " %";
+		return s;
+	}
+
+	/*
+	 * Generera en strängrepresentation av kontoinformationen
+	 * 
+	 * @return En sträng med kontoinformation
+	 */
+	@Override
+	public String closingAccountStatement() {
+		String s = new String();
+		s += getAccountNumber() + " ";
+		s += String.format("%.2f", getBalance()) + " kr ";
+		s += "Kreditkonto ";
+		s += String.format("%.2f", calculateInterest()) + " kr";
+		return s;
+	}
+	
 }
