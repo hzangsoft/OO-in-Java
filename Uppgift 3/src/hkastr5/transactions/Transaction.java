@@ -1,4 +1,4 @@
-package hkastr5;
+package hkastr5.transactions;
 
 /**
  * D0018D, Objektorienterad programmering i Java, Lp1-2, H20
@@ -6,8 +6,7 @@ package hkastr5;
  * @author Håkan Strääf (hkastr-5@student.ltu.se)
  * 
  * Klassen Transaction implementerar tidsstämpling av transaktioner   
- * 
- * 
+
  * 
  */
 import java.text.DateFormat;

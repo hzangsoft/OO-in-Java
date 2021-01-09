@@ -2,7 +2,7 @@ package hkastr5;
 
 /**
  * D0018D, Objektorienterad programmering i Java, Lp1-2, H20
- * Inlämningsuppgift 2
+ * Inlämningsuppgift 3
  * @author Håkan Strääf (hkastr-5@student.ltu.se)
  * 
  * Denna klass hanterar en lista över bankens samtliga kunder. 
@@ -290,7 +290,7 @@ public class CustomerList {
 	/**
 	 * Skapar ett kreditkonto till kund med personnummer pNr
 	 * 
-	 * @param pNr
+	 * @param pNo
 	 *            Kundens personnummer
 	 * @return Kontonumret för det skapade kontot om allt gick bra
 	 * @return -1 om inget konto skapades
@@ -311,7 +311,7 @@ public class CustomerList {
 	 * Hämtar en lista som innehåller presentation av konto samt alla
 	 * transaktioner som gjorts på kontot.
 	 * 
-	 * @param pNr
+	 * @param pNo
 	 *            Kundens personnummer
 	 * @param accountId
 	 *            Kontonumret för det aktuella kontot.

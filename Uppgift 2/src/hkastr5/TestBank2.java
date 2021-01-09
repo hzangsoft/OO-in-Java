@@ -10,8 +10,8 @@ import java.util.ArrayList;
  * Notera att klassen kan uppdateras under kursens gång
  * 
  * Denna klass placeras i default package
- * Ändra paketets namn <qwerty1> i importen ovan, så den matchar 
- * ditt pakets namn <användarid>
+ * Ändra paketets namn qwerty1 i importen ovan, så den matchar 
+ * ditt pakets namn användarid
  * 
  * Kontrollera utskriften i konsol, så ustkifterna matchar
  * 

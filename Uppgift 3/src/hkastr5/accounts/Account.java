@@ -1,9 +1,4 @@
-package hkastr5;
-
-
-import java.util.ArrayList;
-import java.util.ListIterator;
-
+package hkastr5.accounts;
 /**
  * 
  * D0018D, Objektorienterad programmering i Java, Lp1-2, H20
@@ -13,6 +8,14 @@ import java.util.ListIterator;
  * Klassen Account hanterar gemensamma aspekter av olika kontotyper i banken.
  * 
  */
+
+import java.util.ArrayList;
+import java.util.ListIterator;
+import hkastr5.transactions.*;
+
+
+
+
 abstract public class Account {
 	// En klass variabel som används för att generera unika kontonummer.
 	private static int latestAccountNumber = 1000;

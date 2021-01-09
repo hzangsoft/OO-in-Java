@@ -1,5 +1,7 @@
-package hkastr5;
+package hkastr5.logic;
 /**
+ * 
+ *
  * D0018D, Objektorienterad programmering i Java, Lp1-2, H20
  * Inlämningsuppgift 3
  * @author Håkan Strääf (hkastr-5@student.ltu.se)
@@ -12,6 +14,8 @@ package hkastr5;
 
 import java.util.ArrayList;
 
+import hkastr5.customers.*;
+
 public class BankLogic {
 
 	// En lista över bankens kunder.
@@ -22,8 +26,104 @@ public class BankLogic {
 	 */
 	public BankLogic() {
 		this.customerList = new CustomerList();
-	}
+		createTestData();
+		}
 
+	
+	private void createTestData() {
+
+		
+		// Create customers
+		
+		this.createCustomer("Karl", "Karlsson", "8505221898");
+		this.createCustomer("Donald", "Duck", "9302205513");
+		this.createCustomer("Pelle", "Persson", "6911258876");
+		this.createCustomer("Lotta", "Larsson", "7505121231");
+
+
+		// Creates accounts
+		String pNo;
+		int a;
+		
+		pNo = "8505221898";
+		a = this.createCreditAccount(pNo);
+		this.deposit(pNo, a, 100.0);
+		
+		a = this.createCreditAccount(pNo);
+		this.deposit(pNo, a, 200.0);
+		
+		a = this.createCreditAccount(pNo);
+		this.deposit(pNo, a, 300.0);
+		
+		a = this.createSavingsAccount(pNo);
+		this.deposit(pNo, a, 400.0);
+		
+		a = this.createSavingsAccount(pNo);
+		this.deposit(pNo, a, 500.0);
+		
+		a = this.createSavingsAccount(pNo);
+		this.deposit(pNo, a, 600.0);
+		
+		
+		pNo = "9302205513";
+		a = this.createCreditAccount(pNo);
+		this.deposit(pNo, a, 700.0);
+		
+		a = this.createCreditAccount(pNo);
+		this.deposit(pNo, a, 800.0);
+		
+		a = this.createCreditAccount(pNo);
+		this.deposit(pNo, a, 900.0);
+		
+		a = this.createSavingsAccount(pNo);
+		this.deposit(pNo, a, 1000.0);
+		
+		a = this.createSavingsAccount(pNo);
+		this.deposit(pNo, a, 1100.0);
+		
+		a = this.createSavingsAccount(pNo);
+		this.deposit(pNo, a, 1200.0);
+		
+		pNo = "6911258876";
+		a = this.createCreditAccount(pNo);
+		this.deposit(pNo, a, 1300.0);
+		
+		a = this.createCreditAccount(pNo);
+		this.deposit(pNo, a, 1400.0);
+		
+		a = this.createCreditAccount(pNo);
+		this.deposit(pNo, a, 1500.0);
+		
+		a = this.createSavingsAccount(pNo);
+		this.deposit(pNo, a, 1600.0);
+		
+		a = this.createSavingsAccount(pNo);
+		this.deposit(pNo, a, 1700.0);
+		
+		a = this.createSavingsAccount(pNo);
+		this.deposit(pNo, a, 1800.0);
+		
+		
+		pNo= "7505121231";
+		a = this.createCreditAccount(pNo);
+		this.deposit(pNo, a, 1900.0);
+		
+		a = this.createCreditAccount(pNo);
+		this.deposit(pNo, a, 2000.0);
+		
+		a = this.createCreditAccount(pNo);
+		this.deposit(pNo, a, 2100.0);
+		
+		a = this.createSavingsAccount(pNo);
+		this.deposit(pNo, a, 2200.0);
+		
+		a = this.createSavingsAccount(pNo);
+		this.deposit(pNo, a, 2300.0);
+		
+		a = this.createSavingsAccount(pNo);
+		this.deposit(pNo, a, 2400.0);
+		
+	}
 
 
 	/**
@@ -31,9 +131,7 @@ public class BankLogic {
 	 * endast om det inte finns någon kund med personnummer pNo.
 	 * 
 	 * @param name
-	 *            Kundens förnamn
-	 * @param surname
-	 *            Kundens efternamn
+	 *            Kundens namn
 	 * @param pNo
 	 *            Kundens personnummer
 	 * @return True om kund skapades.
@@ -69,12 +167,10 @@ public class BankLogic {
 	}
 
 	/**
-	 * Byter namn på kund med personnummer pNo till name och surname.
+	 * Byter namn på kund med personnummer pNo till name.
 	 * 
 	 * @param name
-	 *            Nya förnamnet
-	 * @param surname
-	 *            Nya efternamnet
+	 *            Nya namnet
 	 * @param pNo
 	 *            Kundens personnummer
 	 * @return True om namnet ändrades,
@@ -215,7 +311,7 @@ public class BankLogic {
 	/**
 	 * Skapar ett kreditkonto till kund med personnummer pNr
 	 * 
-	 * @param pNo
+	 * @param pNr
 	 *            Kundens personnummer
 	 * @return Kontonumret för det skapade kontot om allt gick bra
 	 * @return -1 om inget konto skapades
@@ -234,7 +330,7 @@ public class BankLogic {
 	 * Hämtar en lista som innehåller presentation av konto samt alla
 	 * transaktioner som gjorts på kontot.
 	 * 
-	 * @param pNo
+	 * @param pNr
 	 *            Kundens personnummer
 	 * @param accountId
 	 *            Kontonumret för det aktuella kontot.
@@ -249,14 +345,26 @@ public class BankLogic {
 			return null;
 		}
 	}
-
-
+	
 	/**
-	 * Hämtar en lista med information om bankens samtliga kunder
+	 * Hämtar en lista som innehåller alla konton för en given kund.
 	 * 
+	 * @param pNo
+	 *            Kundens personnummer
 	 * @return En ArrayList med strängar innehållande relevant information
 	 */
+	public ArrayList<Integer> getAccountList(String pNo) {
+		// Kontrollera om kunden finns
+		if (customerList.customerExists(pNo)) {
+			// Kontrollera om kontot finns
+			return customerList.getAccountList(pNo);
+		} else {
+			return null;
+		}
+	}
+	
 	public ArrayList<String> getAllCustomers() {
 		return customerList.getAllCustomers();
-    }
+	}
+	
 }

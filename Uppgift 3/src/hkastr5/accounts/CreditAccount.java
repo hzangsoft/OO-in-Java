@@ -1,7 +1,4 @@
-package hkastr5;
-/**
- * 
- */
+package hkastr5.accounts;
 
 /**
  *
@@ -9,7 +6,7 @@ package hkastr5;
  * Inlämningsuppgift 3
  * @author Håkan Strääf (hkastr-5@student.ltu.se)
  * 
- * Klassen Account hanterar de aspekter av kreditkonton som är specifika för kreditkontot.
+ * Klassen CreditAccount hanterar de aspekter av kreditkonton som är specifika för kreditkontot.
  *
  */
 

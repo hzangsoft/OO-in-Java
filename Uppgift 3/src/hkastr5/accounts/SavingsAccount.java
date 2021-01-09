@@ -1,32 +1,29 @@
-package hkastr5;
+package hkastr5.accounts;
 /**
  * 
- */
-
-/**
- *
  * D0018D, Objektorienterad programmering i Java, Lp1-2, H20
  * Inlämningsuppgift 3
  * @author Håkan Strääf (hkastr-5@student.ltu.se)
  * 
- * Klassen Account hanterar de aspekter av kreditkonton som är specifika för kreditkontot.
+ * Klassen Account hanterar de aspekter av sparkonton som är specifika för sparkontot.
  *
  */
+public class SavingsAccount extends Account {
+	
+	// Indikerar om det fria kontoutdraget har använts eller inte
+	private boolean freeWithdrawalUsed; 
 
 
-public class CreditAccount extends Account {
-	private final static double CREDIT_LIMIT = 5000.0;
-	private final static double CREDIT_RATE = 7.0;
-	private final static double DEBIT_RATE = 0.5;
 	
 	/**
 	 * Defaultkonstruktor
 	 *
-	 * Skapar ett nytt kreditkonto med saldot 0 kronor och räntan 0.5%
+	 * Skapar ett nytt sparkonto med saldot 0 kronor och räntan 1.0%
 	 */
-	public CreditAccount() {
-		this(0.0, DEBIT_RATE);
+	public SavingsAccount() {
+		this(0.0, 1.0);
 	}
+	
 
 	/**
 	 * Konstruktor
@@ -36,21 +33,40 @@ public class CreditAccount extends Account {
 	 * @param interestRate
 	 *            Räntesatsen på kontot.
 	 */
-	public CreditAccount(double balance, double interestRate) {
+	public SavingsAccount(double balance, double interestRate) {
 		super(balance, interestRate);
+		freeWithdrawalUsed = false;
+	}
+	
+	
+	/** (non-Javadoc)
+	 * @see Account#toString()
+	 */
+	@Override
+	public String toString() {
+		String s = new String();
+		s += getAccountNumber() + " ";
+		s += getBalance() + " kr ";
+		s += "Sparkonto ";
+		s += getInterestRate() + " %";
+		return s;
 	}
 
-
-    /** (non-Javadoc)
+	/** (non-Javadoc)
 	 * @see Account#withdraw(double)
-	*/
+	 */
 	@Override
 	public boolean withdraw(double amount) {
+		double amountToWithdraw = amount;
+		if (freeWithdrawalUsed) {
+			final double WITHDRAWAL_FEE_RATE = 0.02;
+			amountToWithdraw += amountToWithdraw * WITHDRAWAL_FEE_RATE;
+		}
 		if (isOpen()) {
-			if (getBalance() >= amount - CREDIT_LIMIT) {
-				setBalance(getBalance() - amount);
-				logTransaction(-amount, getBalance());
-				updateInterestRate();
+			if (getBalance() >= amountToWithdraw) {
+				setBalance(getBalance() - amountToWithdraw);
+				logTransaction(-amountToWithdraw, getBalance());
+				freeWithdrawalUsed = true;
 				return true;
 			} else {
 				return false;
@@ -59,40 +75,19 @@ public class CreditAccount extends Account {
 			return false;
 		}
 	}
-	
-	/**
-	 * Gör en insättning på konto.
-	 * 
-	 * @param amount
-	 *            Summan som ska sättas in på kontot.
-	 * @return TRUE om allt gick bra
-	 * @return FALSE om något gick fel, t.ex. att konto inte är öppet.
-	 */
+
 	public boolean deposit (double amount) {
 		if (isOpen()) {
 			setBalance(getBalance() + amount);
 			logTransaction(amount, getBalance());
-			updateInterestRate();
 			return true;
 		} else {
 			return false;
 		}
 	}
-
+	
 	/**
-	 * Uppdaterat räntesatsen på konton beroende på om saldot är positiv eller negativt..
-	 * 
-	 */
-	private void updateInterestRate() {
-		if (getBalance() < 0.0) {
-			setInterestRate(CREDIT_RATE);		
-		} else {
-			setInterestRate(DEBIT_RATE);
-		}
-	}
-
-	/**
-	 * Generera en strängrepresentation av aktuell kontoinformation.
+	 * Generera en strängrepresentation av kontoinformationen
 	 * 
 	 * @return En sträng med kontoinformation
 	 */
@@ -101,13 +96,13 @@ public class CreditAccount extends Account {
 		String s = new String();
 		s += getAccountNumber() + " ";
 		s += String.format("%.2f", getBalance()) + " kr ";
-		s += "Kreditkonto ";
+		s += "Sparkonto ";
 		s += String.format("%.1f", getInterestRate()) + " %";
 		return s;
 	}
 
 	/**
-	 * Generera en strängrepresentation av kontoinformationen vid kontoavslut
+	 * Generera en strängrepresentation av kontoinformationen
 	 * 
 	 * @return En sträng med kontoinformation
 	 */
@@ -116,8 +111,9 @@ public class CreditAccount extends Account {
 		String s = new String();
 		s += getAccountNumber() + " ";
 		s += String.format("%.2f", getBalance()) + " kr ";
-		s += "Kreditkonto ";
+		s += "Sparkonto ";
 		s += String.format("%.2f", calculateInterest()) + " kr";
 		return s;
 	}
+
 }

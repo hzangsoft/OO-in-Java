@@ -6,7 +6,7 @@ package hkastr5;
 /**
  * 
  * D0018D, Objektorienterad programmering i Java, Lp1-2, H20
- * Inlämningsuppgift 2
+ * Inlämningsuppgift 3
  * @author Håkan Strääf (hkastr-5@student.ltu.se)
  * 
  * Klassen Account hanterar de aspekter av sparkonton som är specifika för sparkontot.

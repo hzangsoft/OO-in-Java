@@ -1,4 +1,4 @@
-package hkastr5;
+package hkastr5.customers;
 /**
  * 
  * D0018D, Objektorienterad programmering i Java, Lp1-2, H20
@@ -14,6 +14,8 @@ package hkastr5;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
+import hkastr5.accounts.*;
+
 
 public class Customer {
 
@@ -129,6 +131,22 @@ public class Customer {
 		return result;
 	}
 
+	/**
+	 * Returnerar en ArrayList som innehåller en presentation av kunden och
+	 * kundens alla konton.
+	 * 
+	 * @return En lista med kund- och kontoinformation.
+	 */
+	public ArrayList<Integer> getAccountList() {
+		ArrayList<Integer> result = new ArrayList<Integer>();
+		if (!accountList.isEmpty()) {
+			for (Account a : accountList) {
+				result.add(a.getAccountNumber());
+			}
+		}
+		return result;
+	}
+	
 	/**
 	 * Kontrollerar om ett konto med nummer accountNo existerar.
 	 * 
