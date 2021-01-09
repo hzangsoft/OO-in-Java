@@ -175,13 +175,11 @@ public class TestBank2
 		amount 			= 4000;
 		if(!testingWithdraw(personalNumber, accountNumber, amount))
 			System.err.println("Error: withdraw("+personalNumber + "," + accountNumber + "," + amount+")");	
-		
 		personalNumber 	= "8505221898";
 		accountNumber  	= 1001;
 		amount 			= 501;
 		if(testingWithdraw(personalNumber, accountNumber, amount))	// Should not work, not enough money
 			System.err.println("Error: withdraw("+personalNumber + "," + accountNumber + "," + amount+")");
-
 		personalNumber 	= "8505221898";
 		accountNumber  	= 1003;
 		amount 			= 500;

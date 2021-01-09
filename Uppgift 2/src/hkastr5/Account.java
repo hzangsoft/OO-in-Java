@@ -7,7 +7,7 @@ import java.util.ListIterator;
 /**
  * 
  * D0018D, Objektorienterad programmering i Java, Lp1-2, H20
- * Inlämningsuppgift 1
+ * Inlämningsuppgift 2
  * @author Håkan Strääf (hkastr-5@student.ltu.se)
  * 
  * Klassen Account hanterar gemensamma aspekter av olika kontotyper i banken.
@@ -40,11 +40,11 @@ abstract public class Account {
 	}
 
 	/**
-	 * Default konstruktor. Sätter behållning till 0.0 kr och räntesats till 1.0
+	 * Default konstruktor. Sätter behållning till 0.00 kr och räntesats till 1.0
 	 * %.
 	 */
 	public Account() {
-		this(0.0, 1.0);
+		this(0.00, 1.0);
 	}
 
 	/**
@@ -112,15 +112,15 @@ abstract public class Account {
 	}
 
 	
-	/*
+	/**
 	 * Generera en strängrepresentation av kontoinformationen
 	 * 
 	 * @return En sträng med kontoinformation
 	 */
 	abstract public String currentAccountStatement();
 
-	/*
-	 * Generera en strängrepresentation av kontoinformationen
+	/**
+	 * Generera en strängrepresentation av kontoinformationen vid avlut av konto.
 	 * 
 	 * @return En sträng med kontoinformation
 	 */

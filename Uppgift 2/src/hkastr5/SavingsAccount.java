@@ -6,27 +6,44 @@ package hkastr5;
 /**
  * 
  * D0018D, Objektorienterad programmering i Java, Lp1-2, H20
- * Inlämningsuppgift 1
+ * Inlämningsuppgift 2
  * @author Håkan Strääf (hkastr-5@student.ltu.se)
  * 
+ * Klassen Account hanterar de aspekter av sparkonton som är specifika för sparkontot.
  *
  */
 public class SavingsAccount extends Account {
 	
+	// Indikerar om det fira kontoutdraget har använts eller inte
 	private boolean freeWithdrawalUsed; 
 
-	public SavingsAccount() {
-		super(0.0, 1.0);
 
-		freeWithdrawalUsed = false;
+	
+	/**
+	 * Defaultkonstruktor
+	 *
+	 * Skapar ett nytt sparkonto med saldot 0 kronor och räntan 1.0%
+	 */
+	public SavingsAccount() {
+		this(0.0, 1.0);
 	}
+	
+
+	/**
+	 * Konstruktor
+	 * 
+	 * @param balance
+	 *            Behållningen på kontot.
+	 * @param interestRate
+	 *            Räntesatsen på kontot.
+	 */
 	public SavingsAccount(double balance, double interestRate) {
 		super(balance, interestRate);
-
 		freeWithdrawalUsed = false;
 	}
-
-	/* (non-Javadoc)
+	
+	
+	/** (non-Javadoc)
 	 * @see Account#toString()
 	 */
 	@Override
@@ -39,7 +56,7 @@ public class SavingsAccount extends Account {
 		return s;
 	}
 
-	/* (non-Javadoc)
+	/** (non-Javadoc)
 	 * @see Account#withdraw(double)
 	 */
 	@Override
@@ -73,7 +90,7 @@ public class SavingsAccount extends Account {
 		}
 	}
 	
-	/*
+	/**
 	 * Generera en strängrepresentation av kontoinformationen
 	 * 
 	 * @return En sträng med kontoinformation
@@ -88,7 +105,7 @@ public class SavingsAccount extends Account {
 		return s;
 	}
 
-	/*
+	/**
 	 * Generera en strängrepresentation av kontoinformationen
 	 * 
 	 * @return En sträng med kontoinformation

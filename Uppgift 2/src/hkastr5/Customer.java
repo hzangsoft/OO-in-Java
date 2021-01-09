@@ -2,7 +2,7 @@ package hkastr5;
 /**
  * 
  * D0018D, Objektorienterad programmering i Java, Lp1-2, H20
- * Inlämningsuppgift 1
+ * Inlämningsuppgift 2
  * @author Håkan Strääf (hkastr-5@student.ltu.se)
  * 
  * Klassen Customer hanterar all information om en av bankens kunder.
@@ -98,7 +98,7 @@ public class Customer {
 		this.socialSecurityNumber = socialSecurityNumber;
 	}
 
-	/*
+	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see java.lang.Object#toString()
@@ -111,7 +111,7 @@ public class Customer {
 		return socialSecurityNumber + " " + name + " " + surname;
 	}
 
-	/*
+	/**
 	 * Returnerar en ArrayList som innehåller en presentation av kunden och
 	 * kundens alla konton.
 	 * 

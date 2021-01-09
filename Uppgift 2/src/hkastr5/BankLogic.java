@@ -1,7 +1,7 @@
 package hkastr5;
 /**
  * D0018D, Objektorienterad programmering i Java, Lp1-2, H20
- * Inlämningsuppgift 1
+ * Inlämningsuppgift 2
  * @author Håkan Strääf (hkastr-5@student.ltu.se)
  * 
  * Klassen Banklogic hanterar bankens samtliga kunder. Informationen 
@@ -31,7 +31,9 @@ public class BankLogic {
 	 * endast om det inte finns någon kund med personnummer pNo.
 	 * 
 	 * @param name
-	 *            Kundens namn
+	 *            Kundens förnamn
+	 * @param surname
+	 *            Kundens efternamn
 	 * @param pNo
 	 *            Kundens personnummer
 	 * @return True om kund skapades.
@@ -67,10 +69,12 @@ public class BankLogic {
 	}
 
 	/**
-	 * Byter namn på kund med personnummer pNo till name.
+	 * Byter namn på kund med personnummer pNo till name och surname.
 	 * 
 	 * @param name
-	 *            Nya namnet
+	 *            Nya förnamnet
+	 * @param surname
+	 *            Nya efternamnet
 	 * @param pNo
 	 *            Kundens personnummer
 	 * @return True om namnet ändrades,
@@ -245,9 +249,14 @@ public class BankLogic {
 			return null;
 		}
 	}
-	
+
+
+	/**
+	 * Hämtar en lista med information om bankens samtliga kunder
+	 * 
+	 * @return En ArrayList med strängar innehållande relevant information
+	 */
 	public ArrayList<String> getAllCustomers() {
 		return customerList.getAllCustomers();
-	}
-	
+    }
 }

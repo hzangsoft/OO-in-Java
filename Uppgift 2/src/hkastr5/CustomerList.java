@@ -2,9 +2,11 @@ package hkastr5;
 
 /**
  * D0018D, Objektorienterad programmering i Java, Lp1-2, H20
- * Inlämningsuppgift 1
+ * Inlämningsuppgift 2
  * @author Håkan Strääf (hkastr-5@student.ltu.se)
  * 
+ * Denna klass hanterar en lista över bankens samtliga kunder. 
+ * Klassen använder sig av en Arraylist för att lagra kunderna.
  * */
 
 import java.util.ArrayList;
@@ -13,6 +15,11 @@ import java.util.ListIterator;
 public class CustomerList {
 
 	ArrayList<Customer> customerList;
+
+	/**
+	 * Konstruktor
+	 * 
+	 */
 
 	public CustomerList() {
 		customerList = new ArrayList<Customer>();
@@ -67,17 +74,29 @@ public class CustomerList {
 		return index;
 	}
 
+	/**
+	 * Lägg till en kund i listan.
+	 * @param name
+	 *            Kundens namn
+	 * @param surname           
+	 *            Kundens efternamn
+	 * 
+	 * @param pNo
+	 *            Kundens personnummer
+	 * @return True om kunden kunde läggas till.
+	 * @return False om kunden redan fanns.
+	 */
 	public boolean addCustomer(String name, String surname, String pNo) {
 		int index = getCustomerIndex(pNo);
 
-		// Kontrollera om kunden redan finns och returnera kundinfo i så fall
+		// Kontrollera om kunden redan finns och returnera false i så fall.
 		if (index >= 0) {
 			return false;
 		} else {
 			return customerList.add(new Customer(name, surname, pNo));
 		}
-
 	}
+	
 	/**
 	 * Returnerar en ArrayList som innehåller informationen om kunden inklusive
 	 * dennes konton. Första platsen i listan är reserverad för kundens namn och
@@ -103,7 +122,10 @@ public class CustomerList {
 	 * Byter namn på kund med personnummer pNo till name.
 	 * 
 	 * @param name
-	 *            Nya namnet
+	 *            Nya förnamnet
+     * @param surname
+	 *            Nya efternamnet
+	
 	 * @param pNo
 	 *            Kundens personnummer
 	 * @return True om namnet ändrades,
