@@ -39,6 +39,18 @@ public class BankLogic {
 		this.createCustomer("Donald", "Duck", "9302205513");
 		this.createCustomer("Pelle", "Persson", "6911258876");
 		this.createCustomer("Lotta", "Larsson", "7505121231");
+		this.createCustomer("Bob", "Hamman", "7505221898");
+		this.createCustomer("Jeff", "Meckstroth", "8302205513");
+		this.createCustomer("Eric", "Rodwell", "5911258876");
+		this.createCustomer("Peter", "Fredin", "6505121231");
+		this.createCustomer("Giorgio", "Belladonna", "6505221898");
+		this.createCustomer("Simon", "Hult", "7302205513");
+		this.createCustomer("Jan", "Kamras", "4911258876");
+		this.createCustomer("Steve", "Weinstein", "5505121231");
+		this.createCustomer("Magnus", "Carlsen", "5505221898");
+		this.createCustomer("Bobby", "Fischer", "6302205513");
+		this.createCustomer("Boris", "Spasskij", "3911258876");
+		this.createCustomer("Anatoly", "Karpov", "4505121231");
 
 
 		// Creates accounts

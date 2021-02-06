@@ -23,8 +23,10 @@ public class ListModelHandler<T> {
 	
 	public void setListItems (ArrayList<T> items) {
 		listModel.clear();
-		for (T s : items) {
-			listModel.addElement(s);
+		if (!items.isEmpty()) {
+			for (T s : items) {
+				listModel.addElement(s);
+			} 
 		}
 	}
 	
