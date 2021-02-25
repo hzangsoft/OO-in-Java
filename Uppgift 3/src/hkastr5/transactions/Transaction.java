@@ -41,7 +41,7 @@ public class Transaction {
 	public String toString() {
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		return df.format(date) + " " +
-				String.format("%.2f", amount) + " kr" +
-		        " Saldo: "  + String.format("%.2f", balance) + " kr";
+				String.format("%10.2f", amount) + " kr" +
+		        String.format("%10.2f", balance) + " kr";
 	}
 }

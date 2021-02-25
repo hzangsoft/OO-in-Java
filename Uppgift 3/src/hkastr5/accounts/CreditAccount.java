@@ -1,5 +1,7 @@
 package hkastr5.accounts;
 
+import java.util.ArrayList;
+
 /**
  *
  * D0018D, Objektorienterad programmering i Java, Lp1-2, H20
@@ -15,7 +17,7 @@ public class CreditAccount extends Account {
 	private final static double CREDIT_LIMIT = 5000.0;
 	private final static double CREDIT_RATE = 7.0;
 	private final static double DEBIT_RATE = 0.5;
-	
+	private final static String accountType = "Kreditkonto";
 	/**
 	 * Defaultkonstruktor
 	 *
@@ -104,6 +106,17 @@ public class CreditAccount extends Account {
 	}
 
 	/**
+	 * Generera en strängrepresentation av kontotypen.
+	 * 
+	 * @return En sträng med kontoinformation
+	 */
+	@Override
+	public String getAccountType() {
+		return accountType;
+	}
+	
+	
+	/**
 	 * Generera en strängrepresentation av kontoinformationen vid kontoavslut
 	 * 
 	 * @return En sträng med kontoinformation
@@ -111,10 +124,24 @@ public class CreditAccount extends Account {
 	@Override
 	public String closingAccountStatement() {
 		String s = new String();
-		s += getAccountNumber() + " ";
-		s += String.format("%.2f", getBalance()) + " kr ";
-		s += "Kreditkonto ";
-		s += String.format("%.2f", calculateInterest()) + " kr";
+		s += String.format("%15d",getAccountNumber()) +" ";
+		s += String.format("%15.2f", getBalance()) + " kr ";
+		s += "   Kreditkonto  ";
+		s += String.format("%15.2f", calculateInterest()) + " kr";
 		return s;
+	}
+	
+	/**
+	 * Generera en strängrepresentation av kontoinformationen vid kontoavslut
+	 * 
+	 * @return En ArrayList med strängar innehållande kontoinformation
+	 */
+	@Override
+	public ArrayList<String> closingStatement() {
+		ArrayList <String> result = new ArrayList<String>();
+		result.add("Kontonummer: " + String.format("%15d",getAccountNumber()));
+		result.add("Behållning:  " + String.format("%15.2f", getBalance()) + " kr ");
+		result.add("Ränta:       " + String.format("%15.2f", calculateInterest()) + " kr");
+		return result;
 	}
 }

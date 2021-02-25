@@ -23,7 +23,10 @@ abstract public class Account {
 	private double balance; // Kontots saldo
 	private double interestRate; // Kontots räntesats
 	private boolean accountOpen; // Anger om kontot är öppet eller inte
+
 	private ArrayList<Transaction> transactions;
+	
+	// Beskriv i rapporten hur detta kan/borde automatiseras
 
 	/**
 	 * Konstruktor
@@ -123,11 +126,25 @@ abstract public class Account {
 	abstract public String currentAccountStatement();
 
 	/**
+	 * Generera en strängrepresentation av kontotypen.
+	 * 
+	 * @return En sträng med kontoinformation
+	 */
+	abstract public String getAccountType();
+	
+	/**
 	 * Generera en strängrepresentation av kontoinformationen vid avlut av konto.
 	 * 
 	 * @return En sträng med kontoinformation
 	 */
 	abstract public String closingAccountStatement();
+	
+	/**
+	 * Generera en strängrepresentation av kontoinformationen vid avlut av konto.
+	 * 
+	 * @return En ArrayList med strängar innehållande kontoinformation
+	 */
+	abstract public ArrayList <String> closingStatement();
 	
 	/**
 	 * Kontrollerar om kontot är öppet.
@@ -189,19 +206,17 @@ abstract public class Account {
 	 * @return En lista med transaktioner som har gjorts på kontot.
 	 */
 	public ArrayList<String> getTransactions() {
-		String s ="";
-		if (!transactions.isEmpty()) {
-			
+		ArrayList<String> result = new ArrayList<String>();
+		
+		if (transactions.isEmpty()) {
+			result.add("Det finns inga transaktioner på kontot");
+		} else {
+			result.add("Tidpunkt                           Belopp        Behållning" +  System.lineSeparator());
 			ListIterator<Transaction> iterator = transactions.listIterator();
 			while (iterator.hasNext()) {
-				s += iterator.next().toString();
-				if (iterator.hasNext()) {
-					s += ", "; 
-				}
+				result.add(iterator.next().toString());
 			}
 		}
-		ArrayList<String> result = new ArrayList<String>();
-		result.add(s);
 		return result;
 	}
 	
@@ -217,4 +232,5 @@ abstract public class Account {
 	protected void logTransaction(double amount, double balance) {
 		transactions.add(new Transaction(amount, balance));
 	}
+	
 }

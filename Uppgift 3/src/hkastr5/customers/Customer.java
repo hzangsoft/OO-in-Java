@@ -43,6 +43,24 @@ public class Customer {
 	}
 
 	/**
+	 * Copy constructor
+	 * 
+	 * @param c
+	 *            Kunden som ska kopieras
+	 */
+	public Customer(Customer c) {
+		super();
+		this.name = c.name;
+		this.surname = c.surname;
+		this.socialSecurityNumber = c.socialSecurityNumber;
+		this.accountList = new ArrayList<Account>();
+		// Är detta det korrekta/bästa sättet att göra en deep copy av en ArrayList
+		accountList.addAll(c.accountList);
+	}
+	
+	
+	
+	/**
 	 * Getter-funktion för kundens förnamn
 	 * 
 	 * @return Kundens förnamn
@@ -100,6 +118,46 @@ public class Customer {
 		this.socialSecurityNumber = socialSecurityNumber;
 	}
 
+	
+	/**
+	 * Validera att ett kundobjekt innehåller giltig information
+	 * 
+	 * @param c Kundobjektet som kontrolleras
+	 * @return En tom sträng om informationen är giltig
+	 * @return En sträng med ett felmeddelande om informationen är ogiltig
+	 */
+	public String validateCustomerInfo(Customer c) {
+		String validationMessage = "";
+		
+		if (c.name.equals("")) {
+			validationMessage+= "Förnamnsfältet får inte vara tomt." + System.lineSeparator(); 
+		} 
+		
+		if (c.surname.equals("")) {
+			validationMessage+= "Efternamnsfältet får inte vara tomt." + System.lineSeparator(); 
+		} 
+		if (c.socialSecurityNumber.equals("")) {
+			validationMessage+="Personnummerfältet får inte vara tomt." + System.lineSeparator(); 
+		} else {
+			// Kontrollera att personnumret består av 10 siffror. 
+			if (!c.socialSecurityNumber.matches("\\d{10}")) {
+				validationMessage+= "Personnumret måste bestå av 10 siffror." + System.lineSeparator();
+			}
+		}
+		return validationMessage;
+	}
+	
+	
+	/**
+	 * Getter-funktion för kundens fullständiga namn,
+	 * 
+	 * @return Kundens fullständiga namn
+	 */
+	public String getFullName() {
+		return name + " " + surname;
+	}
+
+	
 	/**
 	 * (non-Javadoc)
 	 * 
@@ -121,7 +179,9 @@ public class Customer {
 	 */
 	public ArrayList<String> getInfo() {
 		ArrayList<String> result = new ArrayList<String>();
+		// Lägg till kundinformationen
 		result.add(this.toString());
+		// Lägg till ett element för varje konto (om det finns något)
 		if (!accountList.isEmpty()) {
 			for (Account a : accountList) {
 				String s = a.currentAccountStatement();
@@ -132,16 +192,16 @@ public class Customer {
 	}
 
 	/**
-	 * Returnerar en ArrayList som innehåller en presentation av kunden och
-	 * kundens alla konton.
+	 * Returnerar en ArrayList som innehåller en kunds alla kontonummer.
 	 * 
-	 * @return En lista med kund- och kontoinformation.
+	 * @return En lista med kundens kontonummer.
+	 * @return En tom lista om kunde saknar konton
 	 */
-	public ArrayList<Integer> getAccountList() {
-		ArrayList<Integer> result = new ArrayList<Integer>();
+	public ArrayList<String> getAccountNoList() {
+		ArrayList<String> result = new ArrayList<String>();
 		if (!accountList.isEmpty()) {
 			for (Account a : accountList) {
-				result.add(a.getAccountNumber());
+				result.add(Integer.toString(a.getAccountNumber()));
 			}
 		}
 		return result;
@@ -156,8 +216,7 @@ public class Customer {
 	 * @return False om kontonumret inte existerar.
 	 */
 	public boolean accountExists(int accountNo) {
-		ListIterator<Account> accountIterator = accountList
-				.listIterator();
+		ListIterator<Account> accountIterator = accountList.listIterator();
 
 		// Iterera över alla konton tills kontonumret har hittas eller
 		// tills listan är slut.
@@ -218,14 +277,15 @@ public class Customer {
 	 * @param accountId
 	 *            Kontonumret för det konto som skall stängas.
 	 * @return Information om det stängda kontot
+	 * @return null om kontonumret inte ägs av kunden.
 	 */
-	public String closeAccount(int accountId) {
+	public ArrayList <String> closeAccount(int accountId) {
 		int index = getAccountIndex(accountId);
 		// Kontrollera om konto finns
 		if (index >= 0) {
 			// Sätt samman informationen som skall returneras
-			String result = new String();
-			result = accountList.get(index).closingAccountStatement();
+			ArrayList<String> result = accountList.get(index).closingStatement();
+
 			// Ta bort kontot ur listan
 			accountList.remove(index);
 			return result;
@@ -242,8 +302,10 @@ public class Customer {
 	 */
 	public ArrayList<String> closeAllAccounts() {
 		ArrayList<String> result = new ArrayList<String>();
-		result.add(this.toString());
 		if (!accountList.isEmpty()) {
+			// Skapa rubrikrader
+			result.add("Slutinformation för " + this.getSocialSecurityNumber() + " " + this.getFullName() +  System.lineSeparator());
+			result.add("Kontonummer   Behållning    Kontotyp             Ränta" +  System.lineSeparator());
 			// Iterera över alla konton
 			for (Account a : accountList) {
 				String accountInfo = new String();
@@ -252,6 +314,8 @@ public class Customer {
 			}
 			// Töm hela kontolistan.
 			accountList.clear();
+		} else {
+			result.add("Kunden har inga konton.");
 		}
 		return result;
 	}
@@ -288,7 +352,7 @@ public class Customer {
 	 */
 	public boolean withdraw(int accountId, double amount) {
 		boolean result = true;
-		// Kontrollera om kontot finns, och gör i så fall insättningen.
+		// Kontrollera om kontot finns, och gör i så fall uttaget.
 		int index = getAccountIndex(accountId);
 		if (index >= 0) {
 			return accountList.get(index).withdraw(amount);
@@ -304,13 +368,13 @@ public class Customer {
 	 * @param accountId
 	 *            Kundens kontonummer
 	 * @return Null om kontot inte fanns
-	 * @return En sträng med kontoinformation om kontot fanns
+	 * @return Kontot om kontot fanns
 	 */
-	public String getAccount(int accountId) {
+	public Account getAccount(int accountId) {
 		int index = getAccountIndex(accountId);
 		// Kontrollera om kontot finns, och hämta i så fall informationen.
 		if (index >= 0) {
-			return accountList.get(index).currentAccountStatement();
+			return accountList.get(index);
 		} else {
 			return null;
 		}
@@ -318,12 +382,12 @@ public class Customer {
 
 
 	/**
-	 * Returnerar en sträng med information om kontot.
+	 * Hämtar kontotranskationer för ett givet konto.
 	 * 
 	 * @param accountId
 	 *            Kundens kontonummer
 	 * @return Null om kontot inte fanns
-	 * @return En sträng med kontoinformation om kontot fanns
+	 * @return En ArrayList med textsträngar innehållande transaktioninformation.
 	 */
 	public ArrayList <String> getTransactions(int accountId) {
 		int index = getAccountIndex(accountId);

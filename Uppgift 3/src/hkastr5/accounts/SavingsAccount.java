@@ -1,4 +1,7 @@
 package hkastr5.accounts;
+
+import java.util.ArrayList;
+
 /**
  * 
  * D0018D, Objektorienterad programmering i Java, Lp1-2, H20
@@ -12,6 +15,7 @@ public class SavingsAccount extends Account {
 	
 	// Indikerar om det fria kontoutdraget har använts eller inte
 	private boolean freeWithdrawalUsed; 
+	private final static String accountType = "Sparkonto";
 
 
 	
@@ -76,6 +80,10 @@ public class SavingsAccount extends Account {
 		}
 	}
 
+	/** (non-Javadoc)
+	 * @see Account#deposit(double)
+	 */
+	@Override
 	public boolean deposit (double amount) {
 		if (isOpen()) {
 			setBalance(getBalance() + amount);
@@ -102,18 +110,42 @@ public class SavingsAccount extends Account {
 	}
 
 	/**
+	 * Generera en strängrepresentation av kontotypen.
+	 * 
+	 * @return En sträng med kontoinformation
+	 */
+	@Override
+	public String getAccountType() {
+		return accountType;
+	}
+	
+	
+	/**
 	 * Generera en strängrepresentation av kontoinformationen
 	 * 
 	 * @return En sträng med kontoinformation
 	 */
 	@Override
 	public String closingAccountStatement() {
-		String s = new String();
-		s += getAccountNumber() + " ";
-		s += String.format("%.2f", getBalance()) + " kr ";
-		s += "Sparkonto ";
-		s += String.format("%.2f", calculateInterest()) + " kr";
+		String s = "";
+		s += String.format("%15d",getAccountNumber()) +" ";
+		s += String.format("%15.2f", getBalance()) + " kr ";
+		s += "   Sparkonto     ";
+		s += String.format("%15.2f", calculateInterest()) + " kr";
 		return s;
 	}
 
+	/**
+	 * Generera en strängrepresentation av kontoinformationen vid kontoavslut
+	 * 
+	 * @return En ArrayList med strängar innehållande kontoinformation
+	 */
+	@Override
+	public ArrayList<String> closingStatement() {
+		ArrayList <String> result = new ArrayList<String>();
+		result.add("Kontonummer: " + String.format("%15d",getAccountNumber()));
+		result.add("Behållning:  " + String.format("%15.2f", getBalance()) + " kr ");
+		result.add("Ränta:       " + String.format("%15.2f", calculateInterest()) + " kr");
+		return result;
+	}
 }
