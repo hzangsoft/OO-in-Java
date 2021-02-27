@@ -90,20 +90,6 @@ public class CreditAccount extends Account {
 		}
 	}
 
-	/**
-	 * Generera en strängrepresentation av aktuell kontoinformation.
-	 * 
-	 * @return En sträng med kontoinformation
-	 */
-	@Override
-	public String currentAccountStatement() {
-		String s = new String();
-		s += getAccountNumber() + " ";
-		s += String.format("%.2f", getBalance()) + " kr ";
-		s += "Kreditkonto ";
-		s += String.format("%.1f", getInterestRate()) + " %";
-		return s;
-	}
 
 	/**
 	 * Generera en strängrepresentation av kontotypen.

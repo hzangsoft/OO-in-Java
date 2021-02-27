@@ -58,8 +58,7 @@ public class Customer {
 		accountList.addAll(c.accountList);
 	}
 	
-	
-	
+		
 	/**
 	 * Getter-funktion för kundens förnamn
 	 * 
@@ -138,11 +137,10 @@ public class Customer {
 		} 
 		if (c.socialSecurityNumber.equals("")) {
 			validationMessage+="Personnummerfältet får inte vara tomt." + System.lineSeparator(); 
-		} else {
-			// Kontrollera att personnumret består av 10 siffror. 
-			if (!c.socialSecurityNumber.matches("\\d{10}")) {
-				validationMessage+= "Personnumret måste bestå av 10 siffror." + System.lineSeparator();
-			}
+		}
+		// Kontrollera att personnumret består av 10 siffror. 
+		if (!c.socialSecurityNumber.matches("\\d{10}")) {
+			validationMessage+= "Personnumret måste bestå av 10 siffror." + System.lineSeparator();
 		}
 		return validationMessage;
 	}
@@ -171,25 +169,6 @@ public class Customer {
 		return socialSecurityNumber + " " + name + " " + surname;
 	}
 
-	/**
-	 * Returnerar en ArrayList som innehåller en presentation av kunden och
-	 * kundens alla konton.
-	 * 
-	 * @return En lista med kund- och kontoinformation.
-	 */
-	public ArrayList<String> getInfo() {
-		ArrayList<String> result = new ArrayList<String>();
-		// Lägg till kundinformationen
-		result.add(this.toString());
-		// Lägg till ett element för varje konto (om det finns något)
-		if (!accountList.isEmpty()) {
-			for (Account a : accountList) {
-				String s = a.currentAccountStatement();
-				result.add(s);
-			}
-		}
-		return result;
-	}
 
 	/**
 	 * Returnerar en ArrayList som innehåller en kunds alla kontonummer.
@@ -217,7 +196,6 @@ public class Customer {
 	 */
 	public boolean accountExists(int accountNo) {
 		ListIterator<Account> accountIterator = accountList.listIterator();
-
 		// Iterera över alla konton tills kontonumret har hittas eller
 		// tills listan är slut.
 		while (accountIterator.hasNext()) {
@@ -281,17 +259,16 @@ public class Customer {
 	 */
 	public ArrayList <String> closeAccount(int accountId) {
 		int index = getAccountIndex(accountId);
+		ArrayList<String> result = new ArrayList<String>();
 		// Kontrollera om konto finns
 		if (index >= 0) {
 			// Sätt samman informationen som skall returneras
-			ArrayList<String> result = accountList.get(index).closingStatement();
+			result = accountList.get(index).closingStatement();
 
 			// Ta bort kontot ur listan
 			accountList.remove(index);
-			return result;
-		} else {
-			return null;
 		}
+		return result;
 	}
 
 	/**
@@ -330,13 +307,11 @@ public class Customer {
 	 * @return True om det gick bra annars false
 	 */
 	public boolean deposit(int accountId, double amount) {
-		boolean result = true;
+		boolean result = false;
 		int index = getAccountIndex(accountId);
 		// Kontrollera om kontot finns, och gör i så fall insättningen.
 		if (index >= 0) {
-			return accountList.get(index).deposit(amount);
-		} else {
-			result = false;
+			result = accountList.get(index).deposit(amount);
 		}
 		return result;
 	}
@@ -351,13 +326,11 @@ public class Customer {
 	 * @return True om det gick bra annars false
 	 */
 	public boolean withdraw(int accountId, double amount) {
-		boolean result = true;
+		boolean result = false;
 		// Kontrollera om kontot finns, och gör i så fall uttaget.
 		int index = getAccountIndex(accountId);
 		if (index >= 0) {
-			return accountList.get(index).withdraw(amount);
-		} else {
-			result = false;
+			result = accountList.get(index).withdraw(amount);
 		}
 		return result;
 	}

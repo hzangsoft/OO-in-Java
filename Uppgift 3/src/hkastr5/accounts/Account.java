@@ -117,13 +117,6 @@ abstract public class Account {
 		return latestAccountNumber;
 	}
 
-	
-	/**
-	 * Generera en strängrepresentation av kontoinformationen
-	 * 
-	 * @return En sträng med kontoinformation
-	 */
-	abstract public String currentAccountStatement();
 
 	/**
 	 * Generera en strängrepresentation av kontotypen.
@@ -140,7 +133,7 @@ abstract public class Account {
 	abstract public String closingAccountStatement();
 	
 	/**
-	 * Generera en strängrepresentation av kontoinformationen vid avlut av konto.
+	 * Generera en strängrepresentation av kontoinformationen vid avslut av konto.
 	 * 
 	 * @return En ArrayList med strängar innehållande kontoinformation
 	 */

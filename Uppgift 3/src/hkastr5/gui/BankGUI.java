@@ -13,14 +13,21 @@ import javax.swing.JFrame;
 
 import hkastr5.logic.*;
 
-public class BankGui {
+public class BankGUI {
 	
 
 	private JFrame frame;
 	
-	public BankGui(BankLogic bank) {
+	/**
+	 * Konstruktor för klassen BankGUI.
+	 * 
+	 * @param createTestData
+	 * 			Anger om de testdata som finns i klassen ska användas.
+	 */
+
+	public BankGUI(boolean createTestData) {
+		BankLogic bank = new BankLogic(createTestData);
 		frame = new BankFrame(bank);
-		
 		frame.setTitle("Minibanken");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);

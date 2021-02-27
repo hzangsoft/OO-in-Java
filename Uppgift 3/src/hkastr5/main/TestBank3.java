@@ -11,13 +11,14 @@ package hkastr5.main;
 
 import java.io.*;
 
-import hkastr5.gui.BankGui;
-import hkastr5.logic.*;
+import hkastr5.gui.BankGUI;
 
 public class TestBank3
 {	
 	public static void main(String[] args) throws FileNotFoundException
 	{	
-		BankGui bankGui = new BankGui(new BankLogic());
+		// Kontrollera första argumentet för att avgöra om testdata ska genereras eller om vi ska starta med en tom bank.
+		boolean createTestData = args[0].equals("-testdata");
+		BankGUI bankGui = new BankGUI(createTestData);
 	}
 }

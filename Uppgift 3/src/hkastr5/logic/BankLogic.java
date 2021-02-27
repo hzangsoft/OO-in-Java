@@ -25,14 +25,22 @@ public class BankLogic {
 
 
 	/**
-	 * Defaultkonstruktor för klassen Banklogic.
+	 * Konstruktor för klassen Banklogic.
+	 * 
+	 * @param createTestData
+	 * 			Anger om de testdata som funns i klassen ska användas.
 	 */
-	public BankLogic() {
+	public BankLogic(boolean createTestData) {
 		this.customerList = new ArrayList<Customer>();
-		createTestData();
+		if (createTestData) {
+			createTestData();
 		}
+	}
 
 	
+	/**
+	 * Fyller banken med testdata.
+	 */
 	private void createTestData() {
 
 		
@@ -185,7 +193,9 @@ public class BankLogic {
 	 * endast om det inte finns någon kund med personnummer pNo.
 	 * 
 	 * @param name
-	 *            Kundens namn
+	 *            Kundens förnamn
+	 * @param surname
+	 *            Kundens efternamn
 	 * @param pNo
 	 *            Kundens personnummer
 	 * @return True om kund skapades.
@@ -207,7 +217,6 @@ public class BankLogic {
 	 *            Kundens namn
 	 * @param surname           
 	 *            Kundens efternamn
-	 * 
 	 * @param pNo
 	 *            Kundens personnummer
 	 * @return True om kunden kunde läggas till.
@@ -248,24 +257,23 @@ public class BankLogic {
 	/**
 	 * Byter namn på kund med personnummer pNo till name.
 	 * 
+	 * @param pNo
+	 *            Kundens nuvarande personnummer
 	 * @param newName
 	 *            Nya namnet
 	 * @param newpNo
-	 *            Kundens personnummer
-	 * @param newpNo 
-	 * @return True om namnet ändrades,
-	 * @return False om namnet inte ändrades, t.ex.om kunden inte fanns.
+	 *            Kundens nya personnummer
+
 	 */
-	public void changeCustomerName(String currentpNo, String newName, String newSurname, String newpNo) {
-		int index = getCustomerIndex(currentpNo);
+	public void changeCustomerName(String pNo, String newName, String newSurname) {
+		int index = getCustomerIndex(pNo);
 		// Kontrollera om kunden finns
 		if (index >= 0) {
-			
+			// Här används copykonstruktorn.
 			Customer c = new Customer(customerList.get(index));
 			// Ändra kundens namn.
 			c.setName(newName);
 			c.setSurname(newSurname);
-			c.setSocialSecurityNumber(newpNo);
 			customerList.set(index, c);
 		}
 	}
@@ -350,14 +358,12 @@ public class BankLogic {
 	 */
 	public boolean deposit(String pNo, int accountId, double amount) {
 
-		boolean result = true;
+		boolean result = false;
 		int index = getCustomerIndex(pNo);
 
 		// Kontrollera om kunden finns
 		if (index >= 0) {
-			return customerList.get(index).deposit(accountId, amount);
-		} else {
-			result = false;
+			result = customerList.get(index).deposit(accountId, amount);
 		}
 		return result;
 	}
@@ -377,14 +383,12 @@ public class BankLogic {
 	 */
 	public boolean withdraw(String pNo, int accountId, double amount) {
 		
-		boolean	result = true;
+		boolean	result = false;
 
 		// Kontrollera om kunden finns
 		int index = getCustomerIndex(pNo);
 		if (index >= 0) {
-			return customerList.get(index).withdraw(accountId, amount);
-		} else {
-			result = false;
+			result = customerList.get(index).withdraw(accountId, amount);
 		}
 		return result;
 	}
@@ -438,7 +442,7 @@ public class BankLogic {
 	 * Hämtar en lista som innehåller presentation av konto samt alla
 	 * transaktioner som gjorts på kontot.
 	 * 
-	 * @param pNr
+	 * @param pNo
 	 *            Kundens personnummer
 	 * @param accountId
 	 *            Kontonumret för det aktuella kontot.
@@ -447,17 +451,16 @@ public class BankLogic {
 	public ArrayList<String> getTransactions(String pNo, int accountId) {
 		
 		int customerIndex = getCustomerIndex(pNo);
+		ArrayList<String> result = new ArrayList<String>(); 
 
 		// Kontrollera om kunden finns
 		if (customerIndex >= 0) {
 			// Kontrollera om kontot finns
 			if (customerList.get(customerIndex).accountExists(accountId)) {
-				return customerList.get(customerIndex).getTransactions(accountId);
-			} else
-				return null;
-		} else {
-			return null;
+				result = customerList.get(customerIndex).getTransactions(accountId);
+			}
 		}
+		return result;
 	}
 	
 	/**
@@ -476,20 +479,11 @@ public class BankLogic {
 			return null;
 		}
 	}
-	
-	/**
-	 * Hämtar en lista som innehåller all information om bankens alla kunder.
-	 * 
-	 * @return En ArrayList med strängar innehållande relevant information
-	 */
-	public ArrayList<String> getAllCustomers() {
-		return getAllCustomers();
-	}
 
 	/**
-	 * Hämtar en lista som innehåller fullständigt namn på alla kunder.
+	 * Hämtar en lista som innehåller en lista med personnummer på alla kunder.
 	 * 
-	 * @return En ArrayList med strängar innehållande kundernas fullständiga namn
+	 * @return En ArrayList med strängar kundernas personnummer.
 	 */
 	public ArrayList<String> getAllCustomerSSNs() {
 		ArrayList<String> customers = new ArrayList<String>();

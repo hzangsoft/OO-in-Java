@@ -6,7 +6,7 @@ import java.awt.BorderLayout;
  * Inlämningsuppgift 3
  * @author Håkan Strääf (hkastr-5@student.ltu.se)
  * 
- * Klassen BankFrame.  //TO-DO
+ * Klassen BankFrame.
  * 
  */
 import java.awt.Dimension;
@@ -62,7 +62,7 @@ public class BankFrame extends JFrame{
 	// GUI-komponenter, etc som hör till kundpanelen. 
 	private JPanel customerPanel;
 	private DefaultListModel<String> customerModel = new DefaultListModel();
-	private JList customerList =new JList(customerModel);
+	private JList customerList = new JList(customerModel);
 	private JTextField nameField;
 	private JTextField surnameField;
 	private JTextField pNoField;
@@ -89,11 +89,24 @@ public class BankFrame extends JFrame{
 	private JTextField accountTypeField;
 	private JTextField balanceField;
 
+
+	/**
+	 * Konstruktor
+	 * 
+	 * @param bank
+	 *            Bankobjekt som ska visas upp i GUIt.
+	 */
 	public BankFrame(BankLogic bank) {
 		this.bank = bank;
+		
+		// Fyll kund-och kontolistorna med data 
 		initializeListData();
+		
+		// Skapa upp alla komponenter.
 		createComponents();
-
+		
+		// Visa upp informationen för den valda (= första) kunden i listan
+		displayCustomerInfo(currentCustomerpNo());
 		
 		// Se till att fönstret hamnar mitt på skärmen.
 		setLocationRelativeTo(null);
@@ -102,18 +115,20 @@ public class BankFrame extends JFrame{
 	
 	private void initializeListData() {
 		initializeCustomerList();
-		initializeAccountList(currentCustomerpNo());
+    	initializeAccountList(bank.getCustomer(currentCustomerpNo()).getAccountNoList());
 	}
 
 
 	/**
-	 * 
+	 * Initiera kundlistan.
 	 * 
 	 */
 	private void initializeCustomerList() {
 		customerModel.clear();
 		ArrayList <String> pNoList = bank.getAllCustomerSSNs();
-		if (!pNoList.isEmpty()) {
+		if (pNoList.isEmpty()) {
+			customerList.setSelectedIndex(-1); 
+		} else {
 			for (String pNo : pNoList) {
 				customerModel.addElement(pNo);
 			}
@@ -122,13 +137,14 @@ public class BankFrame extends JFrame{
 	}
 	
 	/**
-	 * 
+	 * Initiera kontolistan
 	 * 
 	 */
-	private void initializeAccountList(String pNo) {
+	private void initializeAccountList(ArrayList <String> accounts) {
 		accountModel.clear();
-		ArrayList <String> accounts = bank.getCustomer(pNo).getAccountNoList();
-		if (!accounts.isEmpty()) {
+		if (accounts.isEmpty()) {
+			accountList.setSelectedIndex(-1);
+		} else {
 			for (String accountID : accounts) {
 				accountModel.addElement(Integer.valueOf(accountID));				
 			}
@@ -174,8 +190,6 @@ public class BankFrame extends JFrame{
 
 	/**
 	 * Uppdaterar gränsnittet med avseende på förändringar i
-	 *   - innehåll i kundlistan
-	 *   - innehåll i kontolistan
 	 *   - knappstatus
 	 *   - menyalternativsstatus
 	 * 
@@ -220,6 +234,11 @@ public class BankFrame extends JFrame{
 	 *  Metoder för att skapa paneler.
 	 *****************************************************/
 
+	/**
+	 * Skapa upp kundpanelen
+	 * 
+	 */
+	
 	private void createCustomerPanel() {
 
 		// Skapa kundlistpanelen .
@@ -236,16 +255,7 @@ public class BankFrame extends JFrame{
 		customerList.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent evt) {
 			    if (!evt.getValueIsAdjusting()) {
-			    	String pNo = currentCustomerpNo();
-			    	if (pNo.equals("")) {
-				    	displayCustomerInfo("", "", "");
-				    	accountModel.clear();
-				    	displayAccountInfo("", "");
-			    	} else {
-				    	Customer c = bank.getCustomer(currentCustomerpNo());
-				    	displayCustomerInfo(c.getSocialSecurityNumber(), c.getName(), c.getSurname());
-				    	initializeAccountList(currentCustomerpNo());
-			    	}
+			    	displayCustomerInfo(currentCustomerpNo());
 			    }				
 			}
 		});
@@ -287,6 +297,10 @@ public class BankFrame extends JFrame{
 		customerPanel.add(customerButtonPanel);
 	}
 
+	/**
+	 * Skapa upp kontopanelen
+	 * 
+	 */
 
 	private void createAccountPanel() {
 
@@ -309,16 +323,7 @@ public class BankFrame extends JFrame{
 			public void valueChanged(ListSelectionEvent evt) 
 			{
 				if (!evt.getValueIsAdjusting()) {
-					String pNo = currentCustomerpNo();
-					int aNo = currentAccountNo();
-					if (pNo.equals("") || aNo < 0) {
-						displayAccountInfo("", "");
-					} else {
-						Account a = bank.getCustomer(pNo).getAccount(aNo);
-						String balance = String.format("%10.2f", a.getBalance());
-						String accountType = a.getAccountType();
-						displayAccountInfo(balance, accountType);
-					}
+					displayAccountInfo(currentCustomerpNo(), currentAccountNo());
 				}
 			}
 		});
@@ -355,7 +360,10 @@ public class BankFrame extends JFrame{
 	 * Metoder för att skapa knappar
 	 ****************************************************/
 
-
+	/**
+	 * Skapa knappen för att lägga till en användare.
+	 * Lägg till en actionlistener.
+	 */
 	private JButton createAddUserButton() {
 		JButton button = new JButton("Lägg till kund");
 		ActionListener listener = new CreateCustomerListener();
@@ -364,6 +372,10 @@ public class BankFrame extends JFrame{
 	}
 
 
+	/**
+	 * Skapa knappen för att radera en användare.
+	 * Lägg till en actionlistener.
+	 */
 	private JButton createDeleteUserButton() {
 		JButton button = new JButton("Ta bort kund");
 		ActionListener listener = new DeleteCustomerListener();
@@ -371,21 +383,25 @@ public class BankFrame extends JFrame{
 		return button;
 	}
 
+	/**
+	 * Skapa knappen för att uppdatera informationen om en användare.
+	 * Lägg till en actionlistener.
+	 */
+
 	private JButton createUpdateCustomerInfoButton() {
 		class UpdateUserInfoListener implements ActionListener {
 
 			public void actionPerformed(ActionEvent event) {
 
-				// Till rapport
 				String newName = nameField.getText();
 				String newSurname = surnameField.getText();
-				String newpNo = pNoField.getText();
+				String pNo = currentCustomerpNo();
 
-				String validationResult = bank.validateCustomerInfo(newName, newSurname, newpNo);
+				String validationResult = bank.validateCustomerInfo(pNo, newName, newSurname);
 
-
+				// Kontrollera om den inmatade information är giltig
 				if (validationResult.equals("")) {
-					bank.changeCustomerName(currentCustomerpNo(), newName, newSurname, newpNo);
+					bank.changeCustomerName(pNo, newName, newSurname);
 					infoBox("Kundinformationen har uppdaterats!", "Uppdatera kundinfo");
 					// Uppdatera kundlistan ifall personnumret har ändrats.
 					updateGUI();
@@ -401,6 +417,11 @@ public class BankFrame extends JFrame{
 		return button;
 	}
 
+
+	/**
+	 * Skapa knappen för att göra en insättning på ett konto.
+	 * Lägg till en actionlistener.
+	 */
 	private JButton createDepositButton() {
 		JButton button = new JButton("Insättning");
 		ActionListener listener = new DepositButtonListener();
@@ -408,6 +429,10 @@ public class BankFrame extends JFrame{
 		return button;
 	}
 
+	/**
+	 * Skapa knappen för att göra ett uttag från ett konto.
+	 * Lägg till en actionlistener.
+	 */
 	private JButton createWithDrawButton() {
 		JButton button = new JButton("Uttag");
 		ActionListener listener = new WithdrawButtonListener();
@@ -415,6 +440,10 @@ public class BankFrame extends JFrame{
 		return button;
 	}
 
+	/**
+	 * Skapa knappen för att lista ett kontos alla transaktioner.
+	 * Lägg till en actionlistener.
+	 */
 	private JButton showListTransactionsButton() {
 		JButton button = new JButton("Visa transaktioner");
 		ActionListener listener = new ShowTransactionListener();
@@ -422,16 +451,26 @@ public class BankFrame extends JFrame{
 		return button;
 	}
 
+	/**
+	 * Aktivera/deaktivera knappar och menualternativ som är beroende
+	 * av om ett konto är vald i kontolistan eller inte.
+	 */
 	private void setAccountButtonMenuItemStatus() {
+		boolean customerSelected = customerList.getSelectedIndex() >= 0;
+		createAccountItem.setEnabled(customerSelected);
+
 		boolean accountSelected = accountList.getSelectedIndex() >= 0;
 		depositButton.setEnabled(accountSelected);
 		withdrawButton.setEnabled(accountSelected);
 		transactionButton.setEnabled(accountSelected);
-		createAccountItem.setEnabled(accountSelected);
 		deleteAccountItem.setEnabled(accountSelected);
 		showTransactionItem.setEnabled(accountSelected);
 	}
 
+	/**
+	 * Aktivera/deaktivera knappar och menualternativ som är beroende
+	 * av om en kund är vald i kundlistan eller inte.
+	 */
 	private void setCustomerButtonMenuItemStatus() {
 		boolean customerSelected = customerList.getSelectedIndex() >= 0;
 		updateCustomerInfoButton.setEnabled(customerSelected);
@@ -446,6 +485,9 @@ public class BankFrame extends JFrame{
 	 * 
 	 ****************************************************/	
 
+	/**
+	 * Skapa menyraden med tillhörande menyer.
+	 */
 	private void createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -454,6 +496,9 @@ public class BankFrame extends JFrame{
 		menuBar.add(createAccountMenu());
 	}
 
+	/**
+	 * Skapa 'Arkiv'-menyn med tillhörande menyalternativ.
+	 */
 	private JMenu createFileMenu() {
 		JMenu menu = new JMenu("Arkiv");
 		menu.add(createOpenItem());
@@ -462,6 +507,11 @@ public class BankFrame extends JFrame{
 		return menu;
 	}
 
+	/**
+	 * Skapa 'Öppna'-menyalternativet.
+	 * Lägg till en temoprär actionlistener.
+	 * Den riktiga implementationen läggs till i inlämningsuppgift 4.
+	 */
 	private JMenuItem createOpenItem() {
 		class OpenItemListener implements ActionListener {
 			public void actionPerformed(ActionEvent event) {
@@ -475,6 +525,11 @@ public class BankFrame extends JFrame{
 		return item;
 	}
 
+	/**
+	 * Skapa 'Spara'-menyalternativet.
+	 * Lägg till en temoprär actionlistener.
+	 * Den riktiga implementationen läggs till i inlämningsuppgift 4.
+	 */
 	private JMenuItem createSaveItem() {
 		class SaveItemListener implements ActionListener {
 			public void actionPerformed(ActionEvent event) {
@@ -488,6 +543,10 @@ public class BankFrame extends JFrame{
 		return item;
 	}
 
+	/**
+	 * Skapa 'Avsluta'-menyalternativet.
+	 * Lägg till en actionlistener som stänger applikationen.
+	 */
 	private JMenuItem createExitItem() {
 		class ExitItemListener implements ActionListener {
 			public void actionPerformed(ActionEvent event) {
@@ -501,6 +560,9 @@ public class BankFrame extends JFrame{
 		return item;
 	}
 
+	/**
+	 * Skapa 'Kund'-menyn med tillhörande menyalternativ.
+	 */
 	private JMenu createCustomerMenu() {
 		JMenu menu = new JMenu("Kund");
 		menu.add(createNewCustomerItem());
@@ -508,6 +570,10 @@ public class BankFrame extends JFrame{
 		return menu;
 	}
 
+	/**
+	 * Skapa 'Skapa'-menyalternativet.
+	 * Lägg till en actionlistener.
+	 */
 	private JMenuItem createNewCustomerItem() {
 		JMenuItem item = new JMenuItem("Skapa");
 		ActionListener listener = new CreateCustomerListener();
@@ -515,6 +581,10 @@ public class BankFrame extends JFrame{
 		return item;
 	}
 
+	/**
+	 * Skapa 'Radera'-menyalternativet.
+	 * Lägg till en actionlistener.
+	 */
 	private JMenuItem createDeleteCustomerItem() {
 		JMenuItem item = new JMenuItem("Radera");
 		ActionListener listener = new DeleteCustomerListener();
@@ -522,6 +592,9 @@ public class BankFrame extends JFrame{
 		return item;
 	}
 
+	/**
+	 * Skapa 'Konto'-menyn med tillhörande menyalternativ.
+	 */
 	private JMenu createAccountMenu() {
 		JMenu menu = new JMenu("Konto");
 		menu.add(createAccountItem);
@@ -530,6 +603,10 @@ public class BankFrame extends JFrame{
 		return menu;
 	}
 
+	/**
+	 * Skapa 'Skapa'-menyalternativet.
+	 * Lägg till en actionlistener.
+	 */
 	private JMenuItem createNewAccountItem() {
 		JMenuItem item = new JMenuItem("Skapa");
 		ActionListener listener = new CreateAccountListener();
@@ -537,16 +614,33 @@ public class BankFrame extends JFrame{
 		return item;
 	}
 
+	/**
+	 * Skapa 'Radera'-menyalternativet.
+	 * Lägg till en actionlistener.
+	 */
 	private JMenuItem createDeleteAccountItem() {
 		JMenuItem item = new JMenuItem("Stäng konto");
 		class DeleteAccountListener implements ActionListener {
 			public void actionPerformed(ActionEvent event) {
+				int index = accountList.getSelectedIndex();
+				int aNo = currentAccountNo();
 				String result = "Kontoavslut" + System.lineSeparator() +
 						"Personnummer: " + currentCustomerpNo() + System.lineSeparator(); 
-				for (String s : bank.closeAccount(currentCustomerpNo(), currentAccountNo())) {
+				for (String s : bank.closeAccount(currentCustomerpNo(), aNo)) {
 					result += s + System.lineSeparator();
 				}
 				infoBox(result, "Stäng konto");
+				accountModel.removeElement(aNo);
+				// Avgör vilken kund som ska vara vald.
+				int newIndex;
+				if (accountModel.isEmpty()) {
+					newIndex = -1;
+				} else if (index == 0) {
+					newIndex = 0;
+				} else {
+					newIndex = index - 1;
+				}
+				accountList.setSelectedIndex(newIndex);
 				updateGUI();
 			}
 		}
@@ -555,6 +649,10 @@ public class BankFrame extends JFrame{
 		return item;
 	}
 
+	/**
+	 * Skapa 'Visa transaktioner'-menyalternativet.
+	 * Lägg till en actionlistener.
+	 */
 	private JMenuItem createShowTransactionsItem() {
 		JMenuItem item = new JMenuItem("Visa transaktioner");
 		ActionListener listener = new ShowTransactionListener();
@@ -565,62 +663,150 @@ public class BankFrame extends JFrame{
 
 
 	/****************************************************
-	 *  Metoder för informationsfönster.
+	 *  Metoder för dialogfönster.
 	 *****************************************************/	
 
+	/**
+	 * Skapa ett informationsfönster och visa upp ett meddelande för användaren.
+	 * @param
+	 * 		message Meddelandet som ska visas upp
+	 * @param
+	 * 		title Titeln på informationsfönstret.
+	 */
 	private void infoBox(String message, String title)
 	{
 		JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE);
 	}
 
 
+	/**
+	 * Skapa ett fönster och visa upp ett felmeddelande för användaren.
+	 * @param
+	 * 		errorMessage Felmeddelandet som ska visas upp
+	 * @param
+	 * 		title Titeln på fönstret.
+	 */
 	private static void errorBox(String errorMessage, String title)
 	{
 		JOptionPane.showMessageDialog(null, errorMessage, title, JOptionPane.ERROR_MESSAGE);
 	}
 
+	/**
+	 * Skapa ett fönster där användaren ska bekräfta en handling.
+	 * @param
+	 * 		warningMessage Meddelandet om det användaren ska bekräfta.
+	 * @param
+	 * 		title Titeln på informationsfönstret.
+	 */
 	private boolean confirmBox(String warningMessage, String title)
 	{
 		return JOptionPane.showConfirmDialog(null, warningMessage, title, JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION;
 	}
 
+	
+	/****************************************************
+	 *  Metoder för informationsfönster.
+	 *****************************************************/	
+
+
 	/**
 	 * Fyll de kundspecifika textfälten med information.
 	 * 
-	 * @return En lista över bankens kunder.
+	 * @param
+	 * 		pNo Personnumret för den kund vars information ska visas upp.
 	 */
+	private void displayCustomerInfo(String pNo) {
+		String name;
+		String surname;
+		if (pNo.equals("")) {
+			// Ingen kund vald. Radera informationen i alla fält
+			name = "";
+			surname = "";
+			// Töm kontolistan
+	    	accountModel.clear();
+	    	displayAccountInfo("", -1);
+    	} else {
+			// Hämta informationen om aktuell kund och fyll informationen i alla fält
+	    	Customer c = bank.getCustomer(currentCustomerpNo());
+	    	name =c.getName();
+	    	surname = c.getSurname();
+	    	// Fyll kundlistan med den aktuella kundens kontonymmer.
+	    	initializeAccountList(bank.getCustomer(currentCustomerpNo()).getAccountNoList());
+    	}
 
-	
-	private void displayCustomerInfo(String pNo, String name, String surname) {
+		// Fyll informationen i kundfälten.
 		pNoField.setText(pNo);
 		nameField.setText(name);
 		surnameField.setText(surname);
 	}
 	
-	private void displayAccountInfo(String balance, String accountType) {
+	/**
+	 * Fyll de kundspecifika textfälten med information.
+	 * 
+	 * @param
+	 * 		pNo Personnumret för den kund vars kontoinformation ska visas upp.
+	 * @param 
+	 * 		aNo Kontonumret för det konto vars information ska visas upp.
+	 */
+	private void displayAccountInfo(String pNo, int aNo) {
+		String balance;
+		String accountType;
+		if (aNo == -1) {
+			// Inget konto valt. Radera informationen i alla fält
+			balance = "";
+			accountType = "";
+    	} else {
+			// Hämta informationen om aktuellt konto och fyll informationen i alla fält
+	    	Account a = bank.getCustomer(pNo).getAccount(aNo);
+	    	balance = String.format("%10.2f", a.getBalance());
+	    	accountType = a.getAccountType();
+    	}
+		// Fyll informationen i kontofälten.
 		balanceField.setText(balance);
 		accountTypeField.setText(accountType);
 	}
-	
+
+	/**************************************************************
+	 *  Metoder för action listeners som används på flera ställen.
+	 **************************************************************/	
+
+
+	/**
+	 * Privat class för att implementera action listener för att ta bort en kund
+	 * 
+	 */
 	private class DeleteCustomerListener implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
 			int index = customerList.getSelectedIndex();
+			// Kontrollera att en kund är vald.
 			if ( index>= 0) {			
 				Customer customer = bank.getCustomer(currentCustomerpNo());
+				// Be användaren bekräfta att kunden ska tas bort
 				boolean deleteConfirmed = confirmBox("Är du säker på att du vill ta bort kunden"  +  System.lineSeparator() +
 						"Personnummer: "+ customer.getSocialSecurityNumber() + System.lineSeparator() +
 						"Namn: "+ customer.getFullName()+ "?", "Borttag av kund");
 				if (deleteConfirmed) {
-
+					String pNo = currentCustomerpNo();
+					// Användaren har bekräftat, ta bort kunden
 					ArrayList<String> result = new ArrayList<String>();
-					result = bank.deleteCustomer(currentCustomerpNo());
+					result = bank.deleteCustomer(pNo);
 					String closingStatement = "";
 					for (String s : result) {
 						closingStatement += s + System.lineSeparator();
 					}
-					// Visa upp slutinfo om kund i en MessageBox
+					// Visa upp slutinfo om kundavslut i en MessageBox
 					infoBox(closingStatement, "Kundavslut");
-					customerModel.remove(index);
+					customerModel.removeElement(pNo);
+					// Avgör vilken kund som ska vara vald.
+					int newIndex;
+					if (customerModel.isEmpty()) {
+						newIndex = -1;
+					} else if (index == 0) {
+						newIndex = 0;
+					} else {
+						newIndex = index - 1;
+					}
+					customerList.setSelectedIndex(newIndex);	
 					updateGUI();
 				}
 			} else {
@@ -629,6 +815,10 @@ public class BankFrame extends JFrame{
 		}
 	}
 
+	/**
+	 * Privat class för att implementera action listener för att skapa en kund
+	 * 
+	 */
 	private class CreateCustomerListener implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
 
@@ -649,6 +839,8 @@ public class BankFrame extends JFrame{
 
 			int result;
 			Boolean done = false;
+			// Visa upp dialogrutan tills användaren antingen klickar på 'Cancel'
+			// eller tills användare har gjort matat in giltiga värden i alla fält.
 			while (!done) {
 				result = JOptionPane.showConfirmDialog(null, inputs, "Skapa kund", JOptionPane.OK_CANCEL_OPTION);
 				if (result == JOptionPane.OK_OPTION) {
@@ -657,20 +849,26 @@ public class BankFrame extends JFrame{
 					String newSurname = surnameField.getText();
 					String newpNo = pNoField.getText();
 
+					// Kontrollera inmatningsrfälten
 					String validationResult = bank.validateCustomerInfo(newName, newSurname, newpNo);
+					// Alla fält inehåller giltiga värden
 					if (validationResult.equals("")) {
+						// Skapa den nya kunden
 						if (bank.createCustomer(newName, newSurname, newpNo)) {
-							bank.createCustomer(newName, newSurname, newpNo);
+							// bank.createCustomer(newName, newSurname, newpNo);
 							infoBox("Kunden har skapats!", "Skapa kund");
 							// Uppdatera kundlistan.
-							//Peka på den nya kunden
-							customerModel.add(0, newpNo);
+								customerModel.addElement(newpNo);
+								customerList.setSelectedIndex(customerModel.indexOf(newpNo));
 							updateGUI();
 							done = true;
 						} else {
+							// Det gick inte bra. Det fanns redan en kund med detta personnummer.
 							errorBox("Det finns redan en kund med detta personnummer!", "Skapa kund");
 						}
 					} else {
+						// Användaren har gjort en felaktig inmatning.
+						// Informera om vilken problem som finns.
 						errorBox("Var vänlig kontrollera inmatningsfälten!" + System.lineSeparator() + validationResult,
 								"Skapa kund");
 					}
@@ -681,28 +879,44 @@ public class BankFrame extends JFrame{
 		}
 	}
 
+	/**
+	 * Privat class för att implementera action listener för att skapa ett konto.
+	 * 
+	 */
 	private class CreateAccountListener implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
 
+			// Till rapport
 			// Kan inte få det att fungera med radio buttons. Det faller på att ButtonGroup inte är en JComponent.
 
+			// Det är olämpligt att denna klass känner till vilka kontotyper som finns.
+			// Göra en annan lösning till inlämningsuppgift 4.
 			String[] accountTypes = {"Sparkonto", "Kreditkonto"};
-
+			
 			Object result = JOptionPane.showInputDialog(null, "Ange vilken typ av konto du vill skapa!", "Skapa konto", JOptionPane.OK_CANCEL_OPTION, null, accountTypes, "Sparkonto");
+			// Låt användaren välja kontotype och skapa ett nytt konto i enlighet med valet.
 			if (result != null) {
 				String selection = result.toString();
+				int aNo = -1;
 				if (selection.equals(accountTypes[0])) {
-					bank.createSavingsAccount(currentCustomerpNo());
+					aNo = bank.createSavingsAccount(currentCustomerpNo());
 				} else if (selection.equals(accountTypes[1])) {
-					bank.createCreditAccount(currentCustomerpNo());
+					aNo = bank.createCreditAccount(currentCustomerpNo());
 				} 
+				accountModel.addElement(aNo);
+				accountList.setSelectedIndex(accountModel.indexOf(aNo));
 				updateGUI();
 			}
 		}	
 	}
 
+	/**
+	 * Privat class för att implementera action listener för att visa transaktioner.
+	 * 
+	 */
 	private class ShowTransactionListener implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
+			// KOntrollera så att ett konto är valt.
 			if (accountList.getSelectedIndex() >=0 ) {
 				int accountNo = currentAccountNo();
 				ArrayList <String> transactions = bank.getTransactions(currentCustomerpNo(), accountNo);
@@ -717,6 +931,11 @@ public class BankFrame extends JFrame{
 		}
 	}
 
+	/**
+	 * Privat class för att implementera action listener för att
+	 * göra en insättning på ett konto.
+	 * 
+	 */
 	class DepositButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
 			// Skapa ett nytt dialogfönster.
@@ -727,10 +946,14 @@ public class BankFrame extends JFrame{
 					amountField,
 			};
 			Boolean done = false;
+			// Visa upp dialogrutan och loopa 
+			// tills användare har matat in ett giltigt belopp som det finns 
+			// täcknng för på kontot eller tills användaren löickat på 'Cancel'.
 			while (!done) {
 				int result = JOptionPane.showConfirmDialog(null, inputs, "Insättning", JOptionPane.OK_CANCEL_OPTION);
 				if (result == JOptionPane.OK_OPTION) {
 					double amount;
+					// Testa om användaren matat in ett giltigt belopp.
 					try {
 						amount = Double.parseDouble(amountField.getText());
 						if (bank.deposit(currentCustomerpNo(), currentAccountNo(), amount)) {
@@ -751,6 +974,12 @@ public class BankFrame extends JFrame{
 		}
 	}
 
+
+	/**
+	 * Privat class för att implementera action listener för att
+	 * göra ett uttag från ett konto.
+	 * 
+	 */
 	class WithdrawButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
 			// Skapa ett nytt dialogfönster.
@@ -761,10 +990,14 @@ public class BankFrame extends JFrame{
 					amountField,
 			};
 			Boolean done = false;
+			// Visa upp dialogrutan och loopa 
+			// tills användare har matat in ett giltigt belopp eller 
+			// täcknng för på kontot eller tills användaren löickat på 'Cancel'.
 			while (!done) {
 				int result = JOptionPane.showConfirmDialog(null, inputs, "Uttag", JOptionPane.OK_CANCEL_OPTION);
 				if (result == JOptionPane.OK_OPTION) {
 					double amount;
+					// Testa om användaren matat in ett giltigt belopp.
 					try {
 						amount = Double.parseDouble(amountField.getText());
 						if (bank.withdraw(currentCustomerpNo(), currentAccountNo(), amount)) {

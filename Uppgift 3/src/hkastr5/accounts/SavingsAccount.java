@@ -16,7 +16,7 @@ public class SavingsAccount extends Account {
 	// Indikerar om det fria kontoutdraget har använts eller inte
 	private boolean freeWithdrawalUsed; 
 	private final static String accountType = "Sparkonto";
-
+	private final double WITHDRAWAL_FEE_RATE = 0.02;
 
 	
 	/**
@@ -62,8 +62,8 @@ public class SavingsAccount extends Account {
 	@Override
 	public boolean withdraw(double amount) {
 		double amountToWithdraw = amount;
+		boolean withdrawalSucceeded = false;
 		if (freeWithdrawalUsed) {
-			final double WITHDRAWAL_FEE_RATE = 0.02;
 			amountToWithdraw += amountToWithdraw * WITHDRAWAL_FEE_RATE;
 		}
 		if (isOpen()) {
@@ -71,13 +71,10 @@ public class SavingsAccount extends Account {
 				setBalance(getBalance() - amountToWithdraw);
 				logTransaction(-amountToWithdraw, getBalance());
 				freeWithdrawalUsed = true;
-				return true;
-			} else {
-				return false;
+				withdrawalSucceeded = true;
 			}
-		} else {
-			return false;
 		}
+		return withdrawalSucceeded;
 	}
 
 	/** (non-Javadoc)
@@ -94,20 +91,6 @@ public class SavingsAccount extends Account {
 		}
 	}
 	
-	/**
-	 * Generera en strängrepresentation av kontoinformationen
-	 * 
-	 * @return En sträng med kontoinformation
-	 */
-	@Override
-	public String currentAccountStatement() {
-		String s = new String();
-		s += getAccountNumber() + " ";
-		s += String.format("%.2f", getBalance()) + " kr ";
-		s += "Sparkonto ";
-		s += String.format("%.1f", getInterestRate()) + " %";
-		return s;
-	}
 
 	/**
 	 * Generera en strängrepresentation av kontotypen.
