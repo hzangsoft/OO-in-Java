@@ -18,7 +18,10 @@ public class TestBank3
 	public static void main(String[] args) throws FileNotFoundException
 	{	
 		// Kontrollera första argumentet för att avgöra om testdata ska genereras eller om vi ska starta med en tom bank.
-		boolean createTestData = args[0].equals("-testdata");
+		boolean createTestData = false;
+		if (args.length > 0) {
+			createTestData = args[0].equals("-testdata");
+		}
 		BankGUI bankGui = new BankGUI(createTestData);
 	}
 }
