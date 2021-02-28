@@ -61,8 +61,8 @@ public class BankFrame extends JFrame{
 
 	// GUI-komponenter, etc som hör till kundpanelen. 
 	private JPanel customerPanel;
-	private DefaultListModel<String> customerModel = new DefaultListModel();
-	private JList customerList = new JList(customerModel);
+	private DefaultListModel<String> customerModel = new DefaultListModel<String>();
+	private JList<String> customerList = new JList<String>(customerModel);
 	private JTextField nameField;
 	private JTextField surnameField;
 	private JTextField pNoField;
@@ -85,7 +85,7 @@ public class BankFrame extends JFrame{
 
 
 	private DefaultListModel<Integer> accountModel = new DefaultListModel<Integer>();
-	private JList accountList = new JList(accountModel);
+	private JList<Integer> accountList = new JList<Integer>(accountModel);
 	private JTextField accountTypeField;
 	private JTextField balanceField;
 
@@ -98,24 +98,28 @@ public class BankFrame extends JFrame{
 	 */
 	public BankFrame(BankLogic bank) {
 		this.bank = bank;
-		
+
 		// Fyll kund-och kontolistorna med data 
 		initializeListData();
-		
+
 		// Skapa upp alla komponenter.
 		createComponents();
-		
+
 		// Visa upp informationen för den valda (= första) kunden i listan
 		displayCustomerInfo(currentCustomerpNo());
+
+		updateGUI();
 		
 		// Se till att fönstret hamnar mitt på skärmen.
 		setLocationRelativeTo(null);
 	}
 
-	
+
 	private void initializeListData() {
 		initializeCustomerList();
-    	initializeAccountList(bank.getCustomer(currentCustomerpNo()).getAccountNoList());
+		if (currentAccountNo() >= 0) {
+			initializeAccountList(bank.getCustomer(currentCustomerpNo()).getAccountNoList());
+		}
 	}
 
 
@@ -135,7 +139,7 @@ public class BankFrame extends JFrame{
 			customerList.setSelectedIndex(0);
 		}
 	}
-	
+
 	/**
 	 * Initiera kontolistan
 	 * 
@@ -151,8 +155,8 @@ public class BankFrame extends JFrame{
 			accountList.setSelectedIndex(0);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Skapa upp gränssnittet
 	 * 
@@ -184,8 +188,6 @@ public class BankFrame extends JFrame{
 		add(framePanel);
 
 		pack();
-
-		updateGUI();
 	}
 
 	/**
@@ -198,7 +200,7 @@ public class BankFrame extends JFrame{
 		// Aktivera/deaktivera knappar och menyalternativ
 		setCustomerButtonMenuItemStatus();
 		setAccountButtonMenuItemStatus();
-		}
+	}
 
 	/**
 	 * Hämta personnumret för det kund som är vald i kundlistan.
@@ -238,7 +240,7 @@ public class BankFrame extends JFrame{
 	 * Skapa upp kundpanelen
 	 * 
 	 */
-	
+
 	private void createCustomerPanel() {
 
 		// Skapa kundlistpanelen .
@@ -254,9 +256,10 @@ public class BankFrame extends JFrame{
 		// Skapa en anonym lyssnare som hanterar klickning på en kundperson i listan
 		customerList.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent evt) {
-			    if (!evt.getValueIsAdjusting()) {
-			    	displayCustomerInfo(currentCustomerpNo());
-			    }				
+				if (!evt.getValueIsAdjusting()) {
+					displayCustomerInfo(currentCustomerpNo());
+					updateGUI();
+				}				
 			}
 		});
 
@@ -271,6 +274,8 @@ public class BankFrame extends JFrame{
 		//Skapa och lägg till textfälten.
 		pNoField = new JTextField(TEXT_WIDTH);
 		pNoField.setBorder(BorderFactory.createTitledBorder("Personnummer"));
+		// Personummerfältet ska inte gå att editera.
+		pNoField.setEditable(false);
 		customerInfoPanel.add(pNoField);
 
 		nameField = new JTextField(TEXT_WIDTH);
@@ -335,9 +340,13 @@ public class BankFrame extends JFrame{
 		//Skapa och lägg till textfälten.
 		accountTypeField = new JTextField(TEXT_WIDTH);
 		accountTypeField.setBorder(BorderFactory.createTitledBorder("Kontotyp"));
+		// Fältet för kontotyp ska inte gå att editera.
+		accountTypeField.setEditable(false);
 		accountInfoPanel.add(accountTypeField);
 		balanceField = new JTextField(TEXT_WIDTH);
 		balanceField.setBorder(BorderFactory.createTitledBorder("Saldo"));
+		// Fältet för saldot ska inte gå att editera.
+		balanceField.setEditable(false);
 		accountInfoPanel.add(balanceField);
 
 		// Lägg till panelen.
@@ -397,7 +406,7 @@ public class BankFrame extends JFrame{
 				String newSurname = surnameField.getText();
 				String pNo = currentCustomerpNo();
 
-				String validationResult = bank.validateCustomerInfo(pNo, newName, newSurname);
+				String validationResult = bank.validateCustomerInfo(newName, newSurname, pNo);
 
 				// Kontrollera om den inmatade information är giltig
 				if (validationResult.equals("")) {
@@ -586,7 +595,7 @@ public class BankFrame extends JFrame{
 	 * Lägg till en actionlistener.
 	 */
 	private JMenuItem createDeleteCustomerItem() {
-		JMenuItem item = new JMenuItem("Radera");
+		JMenuItem item = new JMenuItem("Ta bort");
 		ActionListener listener = new DeleteCustomerListener();
 		item.addActionListener(listener);
 		return item;
@@ -703,7 +712,7 @@ public class BankFrame extends JFrame{
 		return JOptionPane.showConfirmDialog(null, warningMessage, title, JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION;
 	}
 
-	
+
 	/****************************************************
 	 *  Metoder för informationsfönster.
 	 *****************************************************/	
@@ -723,23 +732,23 @@ public class BankFrame extends JFrame{
 			name = "";
 			surname = "";
 			// Töm kontolistan
-	    	accountModel.clear();
-	    	displayAccountInfo("", -1);
-    	} else {
+			accountModel.clear();
+			displayAccountInfo("", -1);
+		} else {
 			// Hämta informationen om aktuell kund och fyll informationen i alla fält
-	    	Customer c = bank.getCustomer(currentCustomerpNo());
-	    	name =c.getName();
-	    	surname = c.getSurname();
-	    	// Fyll kundlistan med den aktuella kundens kontonymmer.
-	    	initializeAccountList(bank.getCustomer(currentCustomerpNo()).getAccountNoList());
-    	}
+			Customer c = bank.getCustomer(currentCustomerpNo());
+			name =c.getName();
+			surname = c.getSurname();
+			// Fyll kundlistan med den aktuella kundens kontonymmer.
+			initializeAccountList(bank.getCustomer(currentCustomerpNo()).getAccountNoList());
+		}
 
 		// Fyll informationen i kundfälten.
 		pNoField.setText(pNo);
 		nameField.setText(name);
 		surnameField.setText(surname);
 	}
-	
+
 	/**
 	 * Fyll de kundspecifika textfälten med information.
 	 * 
@@ -755,12 +764,12 @@ public class BankFrame extends JFrame{
 			// Inget konto valt. Radera informationen i alla fält
 			balance = "";
 			accountType = "";
-    	} else {
+		} else {
 			// Hämta informationen om aktuellt konto och fyll informationen i alla fält
-	    	Account a = bank.getCustomer(pNo).getAccount(aNo);
-	    	balance = String.format("%10.2f", a.getBalance());
-	    	accountType = a.getAccountType();
-    	}
+			Account a = bank.getCustomer(pNo).getAccount(aNo);
+			balance = String.format("%10.2f", a.getBalance());
+			accountType = a.getAccountType();
+		}
 		// Fyll informationen i kontofälten.
 		balanceField.setText(balance);
 		accountTypeField.setText(accountType);
@@ -858,8 +867,8 @@ public class BankFrame extends JFrame{
 							// bank.createCustomer(newName, newSurname, newpNo);
 							infoBox("Kunden har skapats!", "Skapa kund");
 							// Uppdatera kundlistan.
-								customerModel.addElement(newpNo);
-								customerList.setSelectedIndex(customerModel.indexOf(newpNo));
+							customerModel.addElement(newpNo);
+							customerList.setSelectedIndex(customerModel.indexOf(newpNo));
 							updateGUI();
 							done = true;
 						} else {
@@ -892,7 +901,7 @@ public class BankFrame extends JFrame{
 			// Det är olämpligt att denna klass känner till vilka kontotyper som finns.
 			// Göra en annan lösning till inlämningsuppgift 4.
 			String[] accountTypes = {"Sparkonto", "Kreditkonto"};
-			
+
 			Object result = JOptionPane.showInputDialog(null, "Ange vilken typ av konto du vill skapa!", "Skapa konto", JOptionPane.OK_CANCEL_OPTION, null, accountTypes, "Sparkonto");
 			// Låt användaren välja kontotype och skapa ett nytt konto i enlighet med valet.
 			if (result != null) {
@@ -957,6 +966,7 @@ public class BankFrame extends JFrame{
 					try {
 						amount = Double.parseDouble(amountField.getText());
 						if (bank.deposit(currentCustomerpNo(), currentAccountNo(), amount)) {
+							displayAccountInfo(currentCustomerpNo(), currentAccountNo());
 							updateGUI();
 							done = true;
 						} else {
@@ -1001,6 +1011,7 @@ public class BankFrame extends JFrame{
 					try {
 						amount = Double.parseDouble(amountField.getText());
 						if (bank.withdraw(currentCustomerpNo(), currentAccountNo(), amount)) {
+							displayAccountInfo(currentCustomerpNo(), currentAccountNo());
 							updateGUI();
 							done = true;
 						} else {

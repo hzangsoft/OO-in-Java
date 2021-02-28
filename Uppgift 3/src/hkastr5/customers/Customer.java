@@ -57,8 +57,8 @@ public class Customer {
 		// Är detta det korrekta/bästa sättet att göra en deep copy av en ArrayList
 		accountList.addAll(c.accountList);
 	}
-	
-		
+
+
 	/**
 	 * Getter-funktion för kundens förnamn
 	 * 
@@ -117,7 +117,7 @@ public class Customer {
 		this.socialSecurityNumber = socialSecurityNumber;
 	}
 
-	
+
 	/**
 	 * Validera att ett kundobjekt innehåller giltig information
 	 * 
@@ -127,11 +127,11 @@ public class Customer {
 	 */
 	public String validateCustomerInfo(Customer c) {
 		String validationMessage = "";
-		
+
 		if (c.name.equals("")) {
 			validationMessage+= "Förnamnsfältet får inte vara tomt." + System.lineSeparator(); 
 		} 
-		
+
 		if (c.surname.equals("")) {
 			validationMessage+= "Efternamnsfältet får inte vara tomt." + System.lineSeparator(); 
 		} 
@@ -144,8 +144,8 @@ public class Customer {
 		}
 		return validationMessage;
 	}
-	
-	
+
+
 	/**
 	 * Getter-funktion för kundens fullständiga namn,
 	 * 
@@ -155,7 +155,7 @@ public class Customer {
 		return name + " " + surname;
 	}
 
-	
+
 	/**
 	 * (non-Javadoc)
 	 * 
@@ -185,7 +185,7 @@ public class Customer {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Kontrollerar om ett konto med nummer accountNo existerar.
 	 * 

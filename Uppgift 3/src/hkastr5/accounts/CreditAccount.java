@@ -40,9 +40,9 @@ public class CreditAccount extends Account {
 	}
 
 
-    /** (non-Javadoc)
+	/** (non-Javadoc)
 	 * @see Account#withdraw(double)
-	*/
+	 */
 	@Override
 	public boolean withdraw(double amount) {
 		if (isOpen()) {
@@ -58,7 +58,7 @@ public class CreditAccount extends Account {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Gör en insättning på konto.
 	 * 
@@ -100,8 +100,8 @@ public class CreditAccount extends Account {
 	public String getAccountType() {
 		return accountType;
 	}
-	
-	
+
+
 	/**
 	 * Generera en strängrepresentation av kontoinformationen vid kontoavslut
 	 * 
@@ -116,7 +116,7 @@ public class CreditAccount extends Account {
 		s += String.format("%15.2f", calculateInterest()) + " kr";
 		return s;
 	}
-	
+
 	/**
 	 * Generera en strängrepresentation av kontoinformationen vid kontoavslut
 	 * 

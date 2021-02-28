@@ -14,10 +14,10 @@ import javax.swing.JFrame;
 import hkastr5.logic.*;
 
 public class BankGUI {
-	
+
 
 	private JFrame frame;
-	
+
 	/**
 	 * Konstruktor för klassen BankGUI.
 	 * 

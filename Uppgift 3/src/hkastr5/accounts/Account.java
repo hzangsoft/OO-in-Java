@@ -25,7 +25,7 @@ abstract public class Account {
 	private boolean accountOpen; // Anger om kontot är öppet eller inte
 
 	private ArrayList<Transaction> transactions;
-	
+
 	// Beskriv i rapporten hur detta kan/borde automatiseras
 
 	/**
@@ -71,7 +71,7 @@ abstract public class Account {
 	public void setAccountOpen(boolean open) {
 		this.accountOpen = open;
 	}
-	
+
 	/**
 	 * Getter-funktion för aktuellt saldo.
 	 * 
@@ -124,21 +124,21 @@ abstract public class Account {
 	 * @return En sträng med kontoinformation
 	 */
 	abstract public String getAccountType();
-	
+
 	/**
 	 * Generera en strängrepresentation av kontoinformationen vid avlut av konto.
 	 * 
 	 * @return En sträng med kontoinformation
 	 */
 	abstract public String closingAccountStatement();
-	
+
 	/**
 	 * Generera en strängrepresentation av kontoinformationen vid avslut av konto.
 	 * 
 	 * @return En ArrayList med strängar innehållande kontoinformation
 	 */
 	abstract public ArrayList <String> closingStatement();
-	
+
 	/**
 	 * Kontrollerar om kontot är öppet.
 	 * 
@@ -167,7 +167,7 @@ abstract public class Account {
 	 * @return True om det gick bra, false i annat fall.
 	 */
 	abstract public boolean withdraw(double amount);
-	
+
 	/**
 	 * Beräknar den upplupna räntan på kontot.
 	 * 
@@ -192,7 +192,7 @@ abstract public class Account {
 			return -1.0;
 		}
 	}
-	
+
 	/**
 	 * Hämta de transaktioner som har gjorts på kontot.
 	 * 
@@ -200,7 +200,7 @@ abstract public class Account {
 	 */
 	public ArrayList<String> getTransactions() {
 		ArrayList<String> result = new ArrayList<String>();
-		
+
 		if (transactions.isEmpty()) {
 			result.add("Det finns inga transaktioner på kontot");
 		} else {
@@ -212,7 +212,7 @@ abstract public class Account {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Lagra en transaktion i transaktionslistan.
 	 * 
@@ -225,5 +225,5 @@ abstract public class Account {
 	protected void logTransaction(double amount, double balance) {
 		transactions.add(new Transaction(amount, balance));
 	}
-	
+
 }

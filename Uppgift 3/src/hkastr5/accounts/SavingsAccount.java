@@ -12,13 +12,13 @@ import java.util.ArrayList;
  *
  */
 public class SavingsAccount extends Account {
-	
+
 	// Indikerar om det fria kontoutdraget har använts eller inte
 	private boolean freeWithdrawalUsed; 
 	private final static String accountType = "Sparkonto";
 	private final double WITHDRAWAL_FEE_RATE = 0.02;
 
-	
+
 	/**
 	 * Defaultkonstruktor
 	 *
@@ -27,7 +27,7 @@ public class SavingsAccount extends Account {
 	public SavingsAccount() {
 		this(0.0, 1.0);
 	}
-	
+
 
 	/**
 	 * Konstruktor
@@ -41,8 +41,8 @@ public class SavingsAccount extends Account {
 		super(balance, interestRate);
 		freeWithdrawalUsed = false;
 	}
-	
-	
+
+
 	/** (non-Javadoc)
 	 * @see Account#toString()
 	 */
@@ -90,7 +90,7 @@ public class SavingsAccount extends Account {
 			return false;
 		}
 	}
-	
+
 
 	/**
 	 * Generera en strängrepresentation av kontotypen.
@@ -101,8 +101,8 @@ public class SavingsAccount extends Account {
 	public String getAccountType() {
 		return accountType;
 	}
-	
-	
+
+
 	/**
 	 * Generera en strängrepresentation av kontoinformationen
 	 * 

@@ -21,7 +21,7 @@ import hkastr5.customers.*;
 public class BankLogic {
 
 	// En lista över bankens kunder.
-		private ArrayList<Customer> customerList;
+	private ArrayList<Customer> customerList;
 
 
 	/**
@@ -37,15 +37,15 @@ public class BankLogic {
 		}
 	}
 
-	
+
 	/**
 	 * Fyller banken med testdata.
 	 */
 	private void createTestData() {
 
-		
+
 		// Create customers
-		
+
 		this.createCustomer("Karl", "Karlsson", "8505221898");
 		this.createCustomer("Donald", "Duck", "9302205513");
 		this.createCustomer("Pelle", "Persson", "6911258876");
@@ -67,7 +67,7 @@ public class BankLogic {
 		// Creates accounts
 		String pNo;
 		int a;
-		
+
 		pNo = "8505221898";
 		a = this.createCreditAccount(pNo);
 		this.deposit(pNo, a, 100.0);
@@ -76,84 +76,84 @@ public class BankLogic {
 		this.deposit(pNo, a, 70.0);
 		this.deposit(pNo, a, 80.0);
 		this.deposit(pNo, a, 90.0);
-		
+
 		a = this.createCreditAccount(pNo);
 		this.deposit(pNo, a, 200.0);
-		
+
 		a = this.createCreditAccount(pNo);
 		this.deposit(pNo, a, 300.0);
-		
+
 		a = this.createSavingsAccount(pNo);
 		this.deposit(pNo, a, 400.0);
-		
+
 		a = this.createSavingsAccount(pNo);
 		this.deposit(pNo, a, 500.0);
-		
+
 		a = this.createSavingsAccount(pNo);
 		this.deposit(pNo, a, 600.0);
-		
-		
+
+
 		pNo = "9302205513";
 		a = this.createCreditAccount(pNo);
 		this.deposit(pNo, a, 700.0);
-		
+
 		a = this.createCreditAccount(pNo);
 		this.deposit(pNo, a, 800.0);
-		
+
 		a = this.createCreditAccount(pNo);
 		this.deposit(pNo, a, 900.0);
-		
+
 		a = this.createSavingsAccount(pNo);
 		this.deposit(pNo, a, 1000.0);
-		
+
 		a = this.createSavingsAccount(pNo);
 		this.deposit(pNo, a, 1100.0);
-		
+
 		a = this.createSavingsAccount(pNo);
 		this.deposit(pNo, a, 1200.0);
-		
+
 		pNo = "6911258876";
 		a = this.createCreditAccount(pNo);
 		this.deposit(pNo, a, 1300.0);
-		
+
 		a = this.createCreditAccount(pNo);
 		this.deposit(pNo, a, 1400.0);
-		
+
 		a = this.createCreditAccount(pNo);
 		this.deposit(pNo, a, 1500.0);
-		
+
 		a = this.createSavingsAccount(pNo);
 		this.deposit(pNo, a, 1600.0);
-		
+
 		a = this.createSavingsAccount(pNo);
 		this.deposit(pNo, a, 1700.0);
-		
+
 		a = this.createSavingsAccount(pNo);
 		this.deposit(pNo, a, 1800.0);
-		
-		
+
+
 		pNo= "7505121231";
 		a = this.createCreditAccount(pNo);
 		this.deposit(pNo, a, 1900.0);
-		
+
 		a = this.createCreditAccount(pNo);
 		this.deposit(pNo, a, 2000.0);
-		
+
 		a = this.createCreditAccount(pNo);
 		this.deposit(pNo, a, 2100.0);
-		
+
 		a = this.createSavingsAccount(pNo);
 		this.deposit(pNo, a, 2200.0);
-		
+
 		a = this.createSavingsAccount(pNo);
 		this.deposit(pNo, a, 2300.0);
-		
+
 		a = this.createSavingsAccount(pNo);
 		this.deposit(pNo, a, 2400.0);
-		
+
 	}
 
-	
+
 	/**
 	 * Kontrollerar om en kund med personnummer pNo existerar.
 	 * 
@@ -187,7 +187,7 @@ public class BankLogic {
 		}
 		return index;
 	}
-	
+
 	/**
 	 * Skapar en ny kund med namnet name samt personnummer pNo, kunden skapas
 	 * endast om det inte finns någon kund med personnummer pNo.
@@ -245,14 +245,14 @@ public class BankLogic {
 	public Customer getCustomer(String pNo) {
 		// Kontrollera om kunden finns och returnera kundinfo i så fall
 		int index = getCustomerIndex(pNo);
-		
+
 		if (index >= 0) {
 			return customerList.get(index);
 		} else {
 			return null;
 		}
 	}
-	
+
 
 	/**
 	 * Byter namn på kund med personnummer pNo till name.
@@ -382,7 +382,7 @@ public class BankLogic {
 	 * @return True om det gick bra annars false
 	 */
 	public boolean withdraw(String pNo, int accountId, double amount) {
-		
+
 		boolean	result = false;
 
 		// Kontrollera om kunden finns
@@ -449,7 +449,7 @@ public class BankLogic {
 	 * @return En ArrayList med strängar innehållande relevant information
 	 */
 	public ArrayList<String> getTransactions(String pNo, int accountId) {
-		
+
 		int customerIndex = getCustomerIndex(pNo);
 		ArrayList<String> result = new ArrayList<String>(); 
 
@@ -462,7 +462,7 @@ public class BankLogic {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Hämtar en lista som innehåller alla konton för en given kund.
 	 * 
