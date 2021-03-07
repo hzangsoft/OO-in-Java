@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"hkastr5.transactions"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"hkastr5.customers"},{"l":"hkastr5.gui"},{"l":"hkastr5.logic"},{"l":"hkastr5.main"},{"l":"hkastr5.transactions"}];updateSearchResults();

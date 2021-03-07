@@ -1,1 +1,1 @@
-typeSearchIndex = [{"l":"All Classes","u":"allclasses-index.html"},{"p":"hkastr5.transactions","l":"Transaction"}];updateSearchResults();
+typeSearchIndex = [{"p":"hkastr5.accounts","l":"AccountTypes"},{"l":"All Classes","u":"allclasses-index.html"},{"p":"hkastr5.gui","l":"BankFrame"},{"p":"hkastr5.gui","l":"BankGUI"},{"p":"hkastr5.logic","l":"BankLogic"},{"p":"hkastr5.customers","l":"Customer"},{"p":"hkastr5.main","l":"TestBank4"},{"p":"hkastr5.transactions","l":"Transaction"}];updateSearchResults();
